@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revisão Ativa — Aula 02 · Raciocínio Lógico</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/assets/config.js"></script>
+<style>
+:root{--bg:#0f1117;--surface:#1a1d27;--surface2:#242836;--border:#2e3345;--text:#e4e6ed;--text-dim:#8b90a0;--accent:#6c8cff;--accent-dim:#4a6ad4;--warn:#f0a050;--success:#5cb85c}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;padding:24px;max-width:900px;margin:0 auto}
+h1{font-size:1.6rem;font-weight:700;margin-bottom:4px;color:var(--accent)}
+.sub{color:var(--text-dim);font-size:.9rem;margin-bottom:32px;border-bottom:1px solid var(--border);padding-bottom:16px}
+.back-link{color:var(--accent);text-decoration:none;font-size:.85rem;display:inline-flex;align-items:center;gap:4px;margin-bottom:16px}
+.back-link:hover{text-decoration:underline}
+.stats{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.st{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 18px;font-size:.85rem}
+.st strong{color:var(--accent);font-size:1.3rem;display:block}
+.info{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:32px;font-size:.88rem;color:var(--text-dim)}
+.info h2{color:var(--text);font-size:1rem;margin-bottom:8px}
+.info ol{padding-left:20px}
+.info li{margin-bottom:6px}
+.topic{position:relative}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:20px;overflow:hidden;transition:border-color .2s}
+.card:hover{border-color:var(--accent-dim)}
+.hdr{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;flex-wrap:wrap;gap:8px}
+.left{display:flex;align-items:center;flex-grow:1;min-width:0}
+.rk{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;font-size:.85rem;margin-right:14px;flex-shrink:0}
+.nm{font-size:1.1rem;font-weight:600}
+.bds{display:flex;gap:6px;flex-wrap:wrap}
+.bd{font-size:.72rem;padding:3px 10px;border-radius:20px;background:var(--surface2);color:var(--text-dim);white-space:nowrap}
+.bd.t{font-weight:600;color:var(--text)}
+.bd.c{border:1px solid var(--accent-dim);color:var(--accent)}
+.bd.f{border:1px solid var(--warn);color:var(--warn)}
+.bd.pg{border:1px solid #555;color:var(--text-dim);font-size:.7rem;margin-left:10px}
+.chips{padding:0 22px 14px;display:flex;flex-wrap:wrap;gap:6px}
+.ch{font-size:.76rem;padding:4px 12px;border-radius:20px;background:var(--surface2);color:var(--text-dim);border:1px solid var(--border)}
+.layer{border-top:1px solid var(--border)}
+.lbtn{width:100%;text-align:left;background:none;border:none;color:var(--text);padding:14px 22px;font-size:.92rem;cursor:pointer;display:flex;align-items:center;gap:10px;font-family:inherit;transition:background .15s}
+.lbtn:hover{background:var(--surface2)}
+.arr{transition:transform .2s;color:var(--accent);font-size:.8rem}
+.lbtn.open .arr{transform:rotate(90deg)}
+.lb{font-weight:600}
+.ht{color:var(--text-dim);font-size:.8rem;font-weight:400}
+.lbd{display:none;padding:4px 22px 20px 44px;font-size:.9rem;line-height:1.8;animation:fi .2s ease}
+.lbd.show{display:block}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+.resumo p{margin-bottom:10px}
+.resumo strong,.resumo b{color:var(--accent);font-weight:600}
+.peg{background:rgba(240,160,80,.08);border-left:3px solid var(--warn);padding:10px 14px;margin-bottom:10px;border-radius:0 6px 6px 0;font-size:.85rem}
+.peg::before{content:"⚠ ";color:var(--warn);font-weight:700}
+.anc{background:var(--surface2);border-radius:8px;padding:16px;margin-bottom:14px}
+.bt{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:4px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+.bt.c{background:rgba(108,140,255,.15);color:var(--accent)}
+.bt.f{background:rgba(240,160,80,.15);color:var(--warn)}
+.qt{margin-bottom:12px;font-size:.88rem}
+.rb{background:var(--surface);border:1px solid var(--border);color:var(--accent);padding:8px 16px;border-radius:6px;cursor:pointer;font-size:.82rem;font-family:inherit;transition:all .15s}
+.rb:hover{background:var(--accent);color:#fff}
+.ans{display:none;margin-top:12px;padding:12px;background:rgba(92,184,92,.06);border-left:3px solid var(--success);border-radius:0 6px 6px 0;font-size:.85rem}
+.ans.show{display:block}
+.gab{font-weight:700;color:var(--success);margin-bottom:6px}
+.ins{color:var(--text-dim)}
+
+/* Auth gate */
+#auth-gate{display:none;position:fixed;inset:0;z-index:9999;background:var(--bg);justify-content:center;align-items:center;flex-direction:column}
+.login-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:40px 36px;max-width:380px;width:90%;text-align:center}
+.login-box h1{font-size:1.4rem;margin-bottom:6px}
+.login-box .subtitle{color:var(--text-dim);font-size:.85rem;margin-bottom:28px}
+.login-box input{display:block;width:100%;padding:10px 14px;margin-bottom:12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.95rem}
+.login-box input:focus{outline:none;border-color:var(--accent)}
+.login-box button[type=submit]{width:100%;padding:10px;background:#238636;color:#fff;border:none;border-radius:6px;font-size:.95rem;font-weight:600;cursor:pointer;margin-top:4px}
+.login-box button[type=submit]:hover{background:#2ea043}
+#login-error{color:#f85149;font-size:.85rem;margin-top:10px;min-height:1.2em}
+
+/* Highlight tools */
+#hl-toggle{position:fixed;bottom:24px;right:24px;z-index:1000;width:48px;height:48px;border-radius:50%;background:#21262d;border:1px solid var(--border);color:var(--text-dim);font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+#hl-toggle:hover,#hl-toggle.active{background:#30363d;color:#ffe066;border-color:#ffe066}
+#hl-toolbar{position:fixed;bottom:80px;right:24px;z-index:1000;opacity:0;pointer-events:none;transform:translateY(10px);transition:all .2s}
+#hl-toolbar.visible{opacity:1;pointer-events:all;transform:translateY(0)}
+.hl-bar{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 12px;box-shadow:0 4px 16px rgba(0,0,0,.4)}
+.hl-color{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:border-color .15s}
+.hl-color.active{border-color:var(--text);box-shadow:0 0 0 2px rgba(230,237,243,.3)}
+.hl-eraser,.hl-close{background:none;border:none;color:var(--text-dim);font-size:1.1rem;cursor:pointer;padding:4px}
+.hl-eraser:hover{color:#f85149}.hl-close:hover{color:var(--text)}
+.hl-sep{color:var(--border);margin:0 2px}
+body.hl-mode{cursor:text}
+body.hl-mode #main-content ::selection{background:rgba(255,224,102,.4)}
+
+/* Notes */
+.note-area{margin:10px 22px 16px}
+.note-toggle{background:none;border:1px solid var(--border);color:var(--text-dim);padding:6px 14px;border-radius:6px;font-size:.8rem;cursor:pointer;transition:all .2s}
+.note-toggle:hover{border-color:var(--accent);color:var(--accent)}
+.note-area.has-content .note-toggle{border-color:#ffe066;color:#ffe066}
+.note-content{display:none;margin-top:8px}
+.note-area.open .note-content{display:block}
+.note-text{width:100%;min-height:80px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:#c9d1d9;padding:10px 12px;font-family:inherit;font-size:.85rem;resize:vertical;box-sizing:border-box}
+.note-text:focus{outline:none;border-color:var(--accent)}
+
+/* Nav bar */
+.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+#logout-btn{background:#21262d;border:1px solid var(--border);color:var(--text-dim);padding:6px 14px;border-radius:6px;font-size:.75rem;cursor:pointer}
+#logout-btn:hover{border-color:#f85149;color:#f85149}
+
+@media(max-width:600px){body{padding:14px}.hdr{padding:14px 16px}.lbtn{padding:12px 16px}.lbd{padding:4px 16px 16px 28px}#hl-toggle{bottom:16px;right:16px;width:42px;height:42px}#hl-toolbar{bottom:66px;right:16px}}
+</style>
+</head>
+<body>
+
+<!-- Auth Gate -->
+<div id="auth-gate">
+<div class="login-box">
+<h1>Revisão Ativa</h1>
+<p class="subtitle">Faça login para acessar o material</p>
+<form id="login-form">
+<input type="email" id="login-email" placeholder="Email" required autocomplete="email">
+<input type="password" id="login-pass" placeholder="Senha" required autocomplete="current-password">
+<button type="submit">Entrar</button>
+</form>
+<p id="login-error"></p>
+</div>
+</div>
+
+<!-- Main Content -->
+<div id="main-content" style="display:none">
+<div class="top-bar">
+<a href="/index.html" class="back-link">&#8592; Painel de Estudos</a>
+<button id="logout-btn" onclick="handleLogout()">Sair</button>
+</div>
+<h1>Revisão Ativa — Aula 02</h1>
+<p class="sub">Raciocínio Lógico · 59 questões analisadas</p>
+<div class="stats">
+<div class="st"><strong>59</strong>Questões</div>
+<div class="st"><strong>11</strong>CEBRASPE</div>
+<div class="st"><strong>10</strong>FGV</div>
+<div class="st"><strong>3</strong>Tópicos</div>
+</div>
+<div class="info">
+<h2>Como usar esta revisão</h2>
+<ol>
+<li><strong>Recall ativo:</strong> Leia o nome do tópico e os subtópicos. Tente discorrer em voz alta TUDO que sabe.</li>
+<li><strong>Verificação:</strong> Abra "Resumo + Pegadinhas" e confira o que acertou, esqueceu ou confundiu.</li>
+<li><strong>Teste:</strong> Resolva as questões-âncora mentalmente antes de revelar o gabarito.</li>
+</ol>
+</div>
+
+
+<div class="topic" id="topic-proposi--o-quantificada-e-cat-gorica">
+<div class="card">
+<div class="hdr">
+<div class="left"><span class="rk">1</span><span class="nm">Proposição Quantificada e Catégorica</span></div>
+<div class="bds"><span class="bd t">30 questões</span><span class="bd c">CEBRASPE 5</span><span class="bd f">FGV 5</span></div>
+</div>
+<div class="chips"><span class="ch">conectivo</span><span class="ch">proposição</span><span class="ch">quantificada</span><span class="ch">conclusão</span><span class="ch">análise</span></div>
+
+<div class="note-area">
+<button class="note-toggle" onclick="this.parentElement.classList.toggle('open')">&#128221; Minhas Anotações</button>
+<div class="note-content">
+<textarea class="note-text" data-topic="Proposição Quantificada e Catégorica" placeholder="Escreva suas anotações aqui..." oninput="debounceSaveNotes()"></textarea>
+</div>
+</div>
+
+<div class="layer">
+<button class="lbtn" onclick="tL(this)"><span class="arr">&#9654;</span><span class="lb">Resumo + Pegadinhas</span><span class="ht">— abra após o recall</span></button>
+<div class="lbd resumo"><p><strong>Proposição Quantificada e Catégorica</strong>: Conceito essencial para concursos públicos. Exigida em 10 questões nas principais bancas.</p><br><h3 style="color:var(--warn);font-size:.95rem;margin-bottom:10px">Pegadinhas da Banca</h3><div class="peg">Negligenciar a estrutura sujeito-predicado nas categóricas</div><div class="peg">Confundir proposições simples com proposições compostas</div><div class="peg">Erro ao classificar quantificadores universais e particulares</div><div class="peg">Confundir distribuição de termos em proposições categóricas</div></div>
+</div>
+<div class="layer">
+<button class="lbtn" onclick="tL(this)"><span class="arr">&#9654;</span><span class="lb">Questões-Âncora</span><span class="ht">— resolva antes de revelar</span></button>
+<div class="lbd">
+<div class="anc">
+<span class="bt f">VUNESP</span>
+<div class="qt">18. (VUNESP/DOCAS-PB/2022) Assinale a alternativa que contém uma negação lógica para a afirmação <br>“Todos os candidatos que estão fazendo a prova têm ensino superior completo e leram o edital do <br>concurso”.  <br>A) Nenhum candidato que está fazendo a prova tem ensino superior completo e leu o edital do concurso. <br>B) Nenhum candidato que está fazendo a prova tem ensino superior completo ou leu o edital do concurso. <br>C) Existe candidato fazendo a prova que não tem ensino superior completo ou não leu o edital do concurso. <br>D) Existe candidato fazendo a prova que não têm ensino superior completo e não leu o edital do concurso. <br>E) Os candidatos que não têm ensino superior completo e não leram o edital não estão fazendo a prova.</div>
+<button class="rb" onclick="tA(this)">Revelar gabarito</button>
+<div class="ans">
+<div class="gab">LETRA C.</div>
+<div class="ins">O primeiro passo nessa questão é perceber que temos duas proposições conectadas pelo &quot;e&quot;.  Nesses casos  de negação de proposição composta, usamos De Morgan e substituímos o &quot;e&quot; pelo &quot;ou&quot;.</div>
+</div>
+</div>
+<div class="anc">
+<span class="bt f">QUADRIX</span>
+<div class="qt">32. (QUADRIX/CFT/2021) Uma empresa possui 80 funcionários, sendo 45 mulheres. Uma pesquisa <br>perguntou aos funcionários se eles se consideravam como proativos ou criativos. O resultado foi o <br>seguinte: 50 funcionários se consideravam proativos; 40 funcionários se consideravam criativos; 25 <br>mulheres não se consideravam apenas criativas; todos os funcionários possuíam pelo menos uma das <br>qualidades; e nenhum homem tem as duas qualidades. Com base nesse caso hipotético, julgue o item. <br>  <br>A negação da proposição: “Todos os funcionários possuem pelo menos uma qualidade e nenhum homem <br>tem as duas qualidades” é “Existe algum funcionário que possui nenhuma qualidade ou algum homem não <br>tem as duas qualidades”.</div>
+<button class="rb" onclick="tA(this)">Revelar gabarito</button>
+<div class="ans">
+<div class="gab">ERRADO.</div>
+<div class="ins">Nessa questão temos duas proposições quantificadas unidas pelo conectivo &quot;e&quot;.  Por isso, devemos usar as  leis de De Morgan para encontrarmos a negação pedida.</div>
+</div>
+</div></div>
+</div>
+</div>
+</div>
+
+
+<div class="topic" id="topic-diagramas-l-gicos">
+<div class="card">
+<div class="hdr">
+<div class="left"><span class="rk">2</span><span class="nm">Diagramas Lógicos</span><span class="bd pg">pp. 18-20</span></div>
+<div class="bds"><span class="bd t">23 questões</span><span class="bd c">CEBRASPE 3</span><span class="bd f">FGV 5</span></div>
+</div>
+<div class="chips"><span class="ch">diagrama</span><span class="ch">válido</span><span class="ch">análise</span></div>
+
+<div class="note-area">
+<button class="note-toggle" onclick="this.parentElement.classList.toggle('open')">&#128221; Minhas Anotações</button>
+<div class="note-content">
+<textarea class="note-text" data-topic="Diagramas Lógicos" placeholder="Escreva suas anotações aqui..." oninput="debounceSaveNotes()"></textarea>
+</div>
+</div>
+
+<div class="layer">
+<button class="lbtn" onclick="tL(this)"><span class="arr">&#9654;</span><span class="lb">Resumo + Pegadinhas</span><span class="ht">— abra após o recall</span></button>
+<div class="lbd resumo"><p> <br>Diagramas Lógicos <br>Com essa bagagem formada sobre proposições categóricas, agora vamos entrar finalmente no estudo dos <br>diagramas lógicos. Usamos esse tipo de diagrama para representar visualmente as proposições <br>categóricas. Quando fazemos isso, muitas vezes conseguimos resolver mais facilmente determinado <br>exercício, pois possibilita enxergarmos situações que de outra forma não enxergaríamos. ...</p><br><h3 style="color:var(--warn);font-size:.95rem;margin-bottom:10px">Pegadinhas da Banca</h3><div class="peg">Erro na interpretação da intersecção e exclusão entre conjuntos</div><div class="peg">Negligenciar casos extremos onde os conjuntos não se relacionam</div><div class="peg">Confundir a relação das premissas com a conclusão no diagrama</div></div>
+</div>
+<div class="layer">
+<button class="lbtn" onclick="tL(this)"><span class="arr">&#9654;</span><span class="lb">Questões-Âncora</span><span class="ht">— resolva antes de revelar</span></button>
+<div class="lbd">
+<div class="anc">
+<span class="bt f">FGV</span>
+<div class="qt">12. (FGV/SEFAZ-ES/2021) Considere as afirmativas a seguir: <br>𝐴 <br>𝐵 <br>𝐶 <br>(4) <br>𝐴 <br>𝐵 <br>𝐶 <br>(5) <br><br>I. Todo auditor que fiscaliza a contabilidade de empresas também presta orientações sobre legislação <br>tributária, mas nenhum auditor que presta orientações sobre legislação tributária instaura processos <br>administrativos fiscais. <br>II. Todo auditor que apreende mercadorias irregulares faz o controle aduaneiro, e alguns auditores que <br>fazem controle aduaneiro, instauram processos administrativos fiscais. <br>III. Nenhum auditor que faz o controle aduaneiro presta orientação tributária. <br> <br>Sendo certo que não há auditor que execute conjuntamente as funções de controle aduaneiro, apreensão <br>de mercadorias irregulares e de instauração de processos administrativos-fiscais, é correto concluir que: <br>(A) nenhum auditor que apreende mercadorias irregulares também fiscaliza a contabilidade de empresas. <br>(B) todo auditor que faz o controle aduaneiro também apreende mercadorias irregulares. <br>(C) todo auditor que presta orientações sobre a legislação tributária também fiscaliza a contabilidade de <br>empresas. <br>(D) pelo menos um auditor que apreende mercadorias irregulares também instaura processos <br>administrativos-fiscais. <br>(E) pelo menos um auditor que fiscaliza a contabilidade de empresas também instaura processos <br>administrativos-fiscais.</div>
+<button class="rb" onclick="tA(this)">Revelar gabarito</button>
+<div class="ans">
+<div class="gab">LETRA A.</div>
+<div class="ins">Um bom começo para essa questão é desenhar os diagramas lógicos.  Para isso, vamos identificar os grupos.</div>
+</div>
+</div>
+<div class="anc">
+<span class="bt f">FCC</span>
+<div class="qt">19. (FCC/PREF. RECIFE/2019) Considere que &quot;um profissional é formado pela Faculdade X” seja uma <br>condição suficiente para “ele presta serviço para a empresa E”. É correto afirmar que: <br>A) a maioria dos profissionais que trabalham para a empresa E são formados pela Faculdade X. <br>B) somente os profissionais que são formados pela Faculdade X prestam serviços para a empresa E. <br>C) um profissional que não é formado pela Faculdade X não presta serviço para a empresa E. <br>D) qualquer profissional que presta serviço para a empresa E é formado pela Faculdade X. <br>E) não existe um profissional formado pela Faculdade X e que não presta serviços para a Empresa E.</div>
+<button class="rb" onclick="tA(this)">Revelar gabarito</button>
+<div class="ans">
+<div class="gab">LETRA E.</div>
+<div class="ins">Vamos resolver esse exercício usando &quot;diagramas lógicos&quot;.  É uma abordagem mais intuitiva e menos teórica.</div>
+</div>
+</div></div>
+</div>
+</div>
+</div>
+
+
+<div class="topic" id="topic-validade-de-argumentos">
+<div class="card">
+<div class="hdr">
+<div class="left"><span class="rk">3</span><span class="nm">Validade de Argumentos</span><span class="bd pg">pp. 21-22</span></div>
+<div class="bds"><span class="bd t">6 questões</span><span class="bd c">CEBRASPE 3</span></div>
+</div>
+<div class="chips"><span class="ch">diagrama</span><span class="ch">válido</span><span class="ch">argumento</span><span class="ch">premissa</span><span class="ch">conclusão</span><span class="ch">análise</span></div>
+
+<div class="note-area">
+<button class="note-toggle" onclick="this.parentElement.classList.toggle('open')">&#128221; Minhas Anotações</button>
+<div class="note-content">
+<textarea class="note-text" data-topic="Validade de Argumentos" placeholder="Escreva suas anotações aqui..." oninput="debounceSaveNotes()"></textarea>
+</div>
+</div>
+
+<div class="layer">
+<button class="lbtn" onclick="tL(this)"><span class="arr">&#9654;</span><span class="lb">Resumo + Pegadinhas</span><span class="ht">— abra após o recall</span></button>
+<div class="lbd resumo"><p> <br>Validade de Argumentos <br>Pessoal, é possível também utilizar diagramas lógicos para demonstrar a validade ou não de determinados <br>argumentos. Muitas vezes, os argumentos trazem uma conclusão que não é necessariamente verdadeira.  <br> <br>Esse tipo de situação pode ser identificado de imediato com o uso de diagramas. Vamos ver um exemplo <br>para entender melhor como essa ferramenta pode nos auxiliar na p...</p><br><h3 style="color:var(--warn);font-size:.95rem;margin-bottom:10px">Pegadinhas da Banca</h3><div class="peg">Erro na aplicação do silogismo categórico</div><div class="peg">Negligenciar a estrutura do argumento em favor do conteúdo</div><div class="peg">Confundir validade formal com verdade factual das premissas</div></div>
+</div>
+<div class="layer">
+<button class="lbtn" onclick="tL(this)"><span class="arr">&#9654;</span><span class="lb">Questões-Âncora</span><span class="ht">— resolva antes de revelar</span></button>
+<div class="lbd">
+<div class="anc">
+<span class="bt f">QUADRIX</span>
+<div class="qt">2. (QUADRIX/CRQ XX/2021)  <br> <br>- Todo engenheiro químico é bom na área de exatas. <br>EF <br>MB <br>DQ <br>M <br><br>- Alguma pessoa boa na área de exatas trabalha no polo petroquímico. <br>- Nenhum professor de química trabalha no polo petroquímico. <br>- Algum engenheiro químico é professor de química. <br>  <br>Considerando o argumento com as premissas acima apresentadas, é correto afirmar que a conclusão válida <br>para esse argumento é: <br>A) Toda pessoa boa na área de exatas é engenheiro químico. <br>B) Algum engenheiro químico trabalha no polo petroquímico. <br>C) Nenhum professor de química é bom na área de exatas. <br>D) Algum professor de química não é bom na área de exatas. <br>E) Alguma pessoa boa na área de exatas não trabalha no polo petroquímico.</div>
+<button class="rb" onclick="tA(this)">Revelar gabarito</button>
+<div class="ans">
+<div class="gab">LETRA E.</div>
+<div class="ins">Vamos desenhar o diagrama lógico pertinente, adicionando os elementos a cada nova premissa analisada.     - Todo engenheiro químico (EQ) é bom na área de exatas (EX).</div>
+</div>
+</div>
+<div class="anc">
+<span class="bt f">QUADRIX</span>
+<div class="qt">1. (QUADRIX/CREF21/2021) Um professor de educação física apresentou as seguintes premissas para <br>argumentar quanto aos benefícios de suas aulas: “Todo aluno que participa das aulas de educação física <br>tira boas notas em matemática”; “Nenhum aluno dependente químico tira boas notas em matemática”; e <br>“Maria participa das aulas de educação física”. Com base nessa situação hipotética, é correto afirmar que <br>a conclusão válida para o argumento do professor é <br>A) Maria é uma aluna dependente química. <br>B) Alguns alunos que participam das aulas de educação física são dependentes químicos. <br>C) Maria não tira boas notas em matemática. <br>D) Todo aluno que tira boas notas em matemática participa das aulas de educação física. <br>E) Maria tira boas notas em matemática.</div>
+<button class="rb" onclick="tA(this)">Revelar gabarito</button>
+<div class="ans">
+<div class="gab">LETRA E.</div>
+<div class="ins">Vamos organizar as premissas do professor ao mesmo tempo que desenhamos o diagrama lógico pertinente.      - Todo aluno que participa das aulas de educação física (EF) tira boas notas em matemática (MB);        - Nenhum aluno dependente químico (DQ) </div>
+</div>
+</div></div>
+</div>
+</div>
+</div>
+
+
+</div><!-- /main-content -->
+
+<script>
+// ===== Review interactions =====
+function tL(b){b.classList.toggle('open');b.nextElementSibling.classList.toggle('show')}
+function tA(b){const a=b.nextElementSibling;a.classList.toggle('show');b.textContent=a.classList.contains('show')?'Ocultar gabarito':'Revelar gabarito'}
+
+// ===== Supabase Auth + Annotations =====
+let sb=null, currentUser=null;
+const PK=location.pathname;
+const COLORS=['#ffe066','#a8e6cf','#ff8b94','#c3aed6'];
+let hlActive=false, selColor=COLORS[0];
+
+function initSB(){
+  if(typeof SUPABASE_URL==='undefined'||SUPABASE_URL.includes('SEU-PROJETO'))return false;
+  sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);return true;
+}
+
+async function checkAuth(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(session){currentUser=session.user;showContent();loadAnno();}
+  else{document.getElementById('auth-gate').style.display='flex';}
+}
+
+function showContent(){
+  document.getElementById('auth-gate').style.display='none';
+  document.getElementById('main-content').style.display='block';
+  initHL();
+}
+
+async function handleLogout(){if(sb)await sb.auth.signOut();location.href='/index.html';}
+
+document.getElementById('login-form').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const em=document.getElementById('login-email').value;
+  const pw=document.getElementById('login-pass').value;
+  const er=document.getElementById('login-error');er.textContent='';
+  const{data,error}=await sb.auth.signInWithPassword({email:em,password:pw});
+  if(error){er.textContent='Email ou senha incorretos.';return;}
+  currentUser=data.user;showContent();loadAnno();
+});
+
+// ===== Highlights =====
+function initHL(){
+  const tb=document.createElement('div');tb.id='hl-toolbar';
+  tb.innerHTML=`<div class="hl-bar">${COLORS.map((c,i)=>`<button class="hl-color${i===0?' active':''}" data-c="${c}" style="background:${c}"></button>`).join('')}<button class="hl-eraser">&#9986;</button><span class="hl-sep">|</span><button class="hl-close">&times;</button></div>`;
+  document.body.appendChild(tb);
+  const tg=document.createElement('button');tg.id='hl-toggle';tg.innerHTML='&#9998;';tg.title='Marca-texto';
+  tg.onclick=()=>{hlActive=!hlActive;tb.classList.toggle('visible',hlActive);tg.classList.toggle('active',hlActive);document.body.classList.toggle('hl-mode',hlActive);};
+  document.body.appendChild(tg);
+  tb.querySelectorAll('.hl-color').forEach(b=>{b.onclick=()=>{selColor=b.dataset.c;tb.querySelectorAll('.hl-color').forEach(x=>x.classList.remove('active'));b.classList.add('active');}});
+  tb.querySelector('.hl-eraser').onclick=()=>{selColor=null;tb.querySelectorAll('.hl-color').forEach(x=>x.classList.remove('active'));};
+  tb.querySelector('.hl-close').onclick=()=>{hlActive=false;tb.classList.remove('visible');tg.classList.remove('active');document.body.classList.remove('hl-mode');};
+  document.addEventListener('mouseup',onSel);
+}
+
+function onSel(){
+  if(!hlActive)return;const s=window.getSelection();if(!s||s.isCollapsed||!s.toString().trim())return;
+  const r=s.getRangeAt(0);const m=document.getElementById('main-content');if(!m.contains(r.commonAncestorContainer))return;
+  if(selColor===null){rmHL(r);}else{applyHL(r,selColor);}
+  s.removeAllRanges();saveHL();
+}
+
+function applyHL(r,c){const mk=document.createElement('mark');mk.className='user-hl';mk.style.cssText=`background:${c};padding:0 1px;border-radius:2px`;try{r.surroundContents(mk);}catch(e){const f=r.extractContents();mk.appendChild(f);r.insertNode(mk);}}
+
+function rmHL(r){document.querySelectorAll('#main-content mark.user-hl').forEach(m=>{if(r.intersectsNode(m)){const p=m.parentNode;while(m.firstChild)p.insertBefore(m.firstChild,m);p.removeChild(m);p.normalize();}});}
+
+// ===== Notes =====
+let nTimer=null;
+function debounceSaveNotes(){clearTimeout(nTimer);nTimer=setTimeout(saveNotes,1500);}
+
+// ===== Persistence =====
+async function saveHL(){
+  const hls=[];document.querySelectorAll('#main-content mark.user-hl').forEach(m=>{
+    hls.push({text:m.textContent,color:m.style.backgroundColor,ctx:(m.previousSibling?.textContent||'').slice(-30)+'|||'+(m.nextSibling?.textContent||'').slice(0,30)});
+  });
+  const p={highlights:hls};
+  if(sb&&currentUser)await sb.from('annotations').upsert({user_id:currentUser.id,page_url:PK,type:'highlights',content:JSON.stringify(p)},{onConflict:'user_id,page_url,type'});
+  localStorage.setItem('hl_'+PK,JSON.stringify(p));
+}
+
+async function saveNotes(){
+  const n={};document.querySelectorAll('.note-text').forEach(t=>{if(t.value.trim())n[t.dataset.topic]=t.value;});
+  if(sb&&currentUser)await sb.from('annotations').upsert({user_id:currentUser.id,page_url:PK,type:'notes',content:JSON.stringify(n)},{onConflict:'user_id,page_url,type'});
+  localStorage.setItem('notes_'+PK,JSON.stringify(n));
+}
+
+async function loadAnno(){
+  let hd=null,nd=null;
+  if(sb&&currentUser){const{data}=await sb.from('annotations').select('type,content').eq('user_id',currentUser.id).eq('page_url',PK);if(data)data.forEach(r=>{if(r.type==='highlights')hd=JSON.parse(r.content);if(r.type==='notes')nd=JSON.parse(r.content);});}
+  if(!hd){const l=localStorage.getItem('hl_'+PK);if(l)hd=JSON.parse(l);}
+  if(!nd){const l=localStorage.getItem('notes_'+PK);if(l)nd=JSON.parse(l);}
+  if(hd)restoreHL(hd);if(nd)restoreNotes(nd);
+}
+
+function restoreHL(d){
+  if(!d.highlights||!d.highlights.length)return;
+  const w=document.createTreeWalker(document.getElementById('main-content'),NodeFilter.SHOW_TEXT);
+  const tn=[];while(w.nextNode())tn.push(w.currentNode);
+  d.highlights.forEach(h=>{for(const n of tn){const i=n.textContent.indexOf(h.text);if(i!==-1){const r=document.createRange();r.setStart(n,i);r.setEnd(n,i+h.text.length);const mk=document.createElement('mark');mk.className='user-hl';mk.style.cssText=`background:${h.color};padding:0 1px;border-radius:2px`;try{r.surroundContents(mk);}catch(e){}break;}}});
+}
+
+function restoreNotes(d){Object.entries(d).forEach(([t,v])=>{const ta=document.querySelector(`.note-text[data-topic="${t}"]`);if(ta){ta.value=v;ta.closest('.note-area')?.classList.add('has-content');}});}
+
+// ===== Init =====
+document.addEventListener('DOMContentLoaded',()=>{
+  if(initSB()){checkAuth();}
+  else{showContent();const hl=localStorage.getItem('hl_'+PK);if(hl)restoreHL(JSON.parse(hl));const nt=localStorage.getItem('notes_'+PK);if(nt)restoreNotes(JSON.parse(nt));}
+});
+</script>
+</body></html>
