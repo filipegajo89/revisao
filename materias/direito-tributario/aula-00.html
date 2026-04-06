@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revisão Ativa — Aula 00 · Direito Tributário</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/assets/config.js"></script>
+<style>
+:root{--bg:#0f1117;--surface:#1a1d27;--surface2:#242836;--border:#2e3345;--text:#e4e6ed;--text-dim:#8b90a0;--accent:#6c8cff;--accent-dim:#4a6ad4;--warn:#f0a050;--success:#5cb85c}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;padding:24px;max-width:900px;margin:0 auto}
+h1{font-size:1.6rem;font-weight:700;margin-bottom:4px;color:var(--accent)}
+.sub{color:var(--text-dim);font-size:.9rem;margin-bottom:32px;border-bottom:1px solid var(--border);padding-bottom:16px}
+.back-link{color:var(--accent);text-decoration:none;font-size:.85rem;display:inline-flex;align-items:center;gap:4px;margin-bottom:16px}
+.back-link:hover{text-decoration:underline}
+.stats{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.st{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 18px;font-size:.85rem}
+.st strong{color:var(--accent);font-size:1.3rem;display:block}
+.info{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:32px;font-size:.88rem;color:var(--text-dim)}
+.info h2{color:var(--text);font-size:1rem;margin-bottom:8px}
+.info ol{padding-left:20px}
+.info li{margin-bottom:6px}
+.topic{position:relative}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:20px;overflow:hidden;transition:border-color .2s}
+.card:hover{border-color:var(--accent-dim)}
+.hdr{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;flex-wrap:wrap;gap:8px}
+.left{display:flex;align-items:center;flex-grow:1;min-width:0}
+.rk{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;font-size:.85rem;margin-right:14px;flex-shrink:0}
+.nm{font-size:1.1rem;font-weight:600}
+.bds{display:flex;gap:6px;flex-wrap:wrap}
+.bd{font-size:.72rem;padding:3px 10px;border-radius:20px;background:var(--surface2);color:var(--text-dim);white-space:nowrap}
+.bd.t{font-weight:600;color:var(--text)}
+.bd.c{border:1px solid var(--accent-dim);color:var(--accent)}
+.bd.f{border:1px solid var(--warn);color:var(--warn)}
+.bd.pg{border:1px solid #555;color:var(--text-dim);font-size:.7rem;margin-left:10px}
+.chips{padding:0 22px 14px;display:flex;flex-wrap:wrap;gap:6px}
+.ch{font-size:.76rem;padding:4px 12px;border-radius:20px;background:var(--surface2);color:var(--text-dim);border:1px solid var(--border)}
+.layer{border-top:1px solid var(--border)}
+.lbtn{width:100%;text-align:left;background:none;border:none;color:var(--text);padding:14px 22px;font-size:.92rem;cursor:pointer;display:flex;align-items:center;gap:10px;font-family:inherit;transition:background .15s}
+.lbtn:hover{background:var(--surface2)}
+.arr{transition:transform .2s;color:var(--accent);font-size:.8rem}
+.lbtn.open .arr{transform:rotate(90deg)}
+.lb{font-weight:600}
+.ht{color:var(--text-dim);font-size:.8rem;font-weight:400}
+.lbd{display:none;padding:4px 22px 20px 44px;font-size:.9rem;line-height:1.8;animation:fi .2s ease}
+.lbd.show{display:block}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+.resumo p{margin-bottom:10px}
+.resumo strong,.resumo b{color:var(--accent);font-weight:600}
+.peg{background:rgba(240,160,80,.08);border-left:3px solid var(--warn);padding:10px 14px;margin-bottom:10px;border-radius:0 6px 6px 0;font-size:.85rem}
+.peg::before{content:"⚠ ";color:var(--warn);font-weight:700}
+.anc{background:var(--surface2);border-radius:8px;padding:16px;margin-bottom:14px}
+.bt{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:4px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+.bt.c{background:rgba(108,140,255,.15);color:var(--accent)}
+.bt.f{background:rgba(240,160,80,.15);color:var(--warn)}
+.qt{margin-bottom:12px;font-size:.88rem}
+.rb{background:var(--surface);border:1px solid var(--border);color:var(--accent);padding:8px 16px;border-radius:6px;cursor:pointer;font-size:.82rem;font-family:inherit;transition:all .15s}
+.rb:hover{background:var(--accent);color:#fff}
+.ans{display:none;margin-top:12px;padding:12px;background:rgba(92,184,92,.06);border-left:3px solid var(--success);border-radius:0 6px 6px 0;font-size:.85rem}
+.ans.show{display:block}
+.gab{font-weight:700;color:var(--success);margin-bottom:6px}
+.ins{color:var(--text-dim)}
+
+/* Auth gate */
+#auth-gate{display:none;position:fixed;inset:0;z-index:9999;background:var(--bg);justify-content:center;align-items:center;flex-direction:column}
+.login-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:40px 36px;max-width:380px;width:90%;text-align:center}
+.login-box h1{font-size:1.4rem;margin-bottom:6px}
+.login-box .subtitle{color:var(--text-dim);font-size:.85rem;margin-bottom:28px}
+.login-box input{display:block;width:100%;padding:10px 14px;margin-bottom:12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.95rem}
+.login-box input:focus{outline:none;border-color:var(--accent)}
+.login-box button[type=submit]{width:100%;padding:10px;background:#238636;color:#fff;border:none;border-radius:6px;font-size:.95rem;font-weight:600;cursor:pointer;margin-top:4px}
+.login-box button[type=submit]:hover{background:#2ea043}
+#login-error{color:#f85149;font-size:.85rem;margin-top:10px;min-height:1.2em}
+
+/* Highlight tools */
+#hl-toggle{position:fixed;bottom:24px;right:24px;z-index:1000;width:48px;height:48px;border-radius:50%;background:#21262d;border:1px solid var(--border);color:var(--text-dim);font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+#hl-toggle:hover,#hl-toggle.active{background:#30363d;color:#ffe066;border-color:#ffe066}
+#hl-toolbar{position:fixed;bottom:80px;right:24px;z-index:1000;opacity:0;pointer-events:none;transform:translateY(10px);transition:all .2s}
+#hl-toolbar.visible{opacity:1;pointer-events:all;transform:translateY(0)}
+.hl-bar{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 12px;box-shadow:0 4px 16px rgba(0,0,0,.4)}
+.hl-color{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:border-color .15s}
+.hl-color.active{border-color:var(--text);box-shadow:0 0 0 2px rgba(230,237,243,.3)}
+.hl-eraser,.hl-close{background:none;border:none;color:var(--text-dim);font-size:1.1rem;cursor:pointer;padding:4px}
+.hl-eraser:hover{color:#f85149}.hl-close:hover{color:var(--text)}
+.hl-sep{color:var(--border);margin:0 2px}
+body.hl-mode{cursor:text}
+body.hl-mode #main-content ::selection{background:rgba(255,224,102,.4)}
+
+/* Notes */
+.note-area{margin:10px 22px 16px}
+.note-toggle{background:none;border:1px solid var(--border);color:var(--text-dim);padding:6px 14px;border-radius:6px;font-size:.8rem;cursor:pointer;transition:all .2s}
+.note-toggle:hover{border-color:var(--accent);color:var(--accent)}
+.note-area.has-content .note-toggle{border-color:#ffe066;color:#ffe066}
+.note-content{display:none;margin-top:8px}
+.note-area.open .note-content{display:block}
+.note-text{width:100%;min-height:80px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:#c9d1d9;padding:10px 12px;font-family:inherit;font-size:.85rem;resize:vertical;box-sizing:border-box}
+.note-text:focus{outline:none;border-color:var(--accent)}
+
+/* Nav bar */
+.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+#logout-btn{background:#21262d;border:1px solid var(--border);color:var(--text-dim);padding:6px 14px;border-radius:6px;font-size:.75rem;cursor:pointer}
+#logout-btn:hover{border-color:#f85149;color:#f85149}
+
+@media(max-width:600px){body{padding:14px}.hdr{padding:14px 16px}.lbtn{padding:12px 16px}.lbd{padding:4px 16px 16px 28px}#hl-toggle{bottom:16px;right:16px;width:42px;height:42px}#hl-toolbar{bottom:66px;right:16px}}
+</style>
+</head>
+<body>
+
+<!-- Auth Gate -->
+<div id="auth-gate">
+<div class="login-box">
+<h1>Revisão Ativa</h1>
+<p class="subtitle">Faça login para acessar o material</p>
+<form id="login-form">
+<input type="email" id="login-email" placeholder="Email" required autocomplete="email">
+<input type="password" id="login-pass" placeholder="Senha" required autocomplete="current-password">
+<button type="submit">Entrar</button>
+</form>
+<p id="login-error"></p>
+</div>
+</div>
+
+<!-- Main Content -->
+<div id="main-content" style="display:none">
+<div class="top-bar">
+<a href="/index.html" class="back-link">&#8592; Painel de Estudos</a>
+<button id="logout-btn" onclick="handleLogout()">Sair</button>
+</div>
+<h1>Revisão Ativa — Aula 00</h1>
+<p class="sub">Direito Tributário · 68 questões analisadas</p>
+<div class="stats">
+<div class="st"><strong>68</strong>Questões</div>
+<div class="st"><strong>27</strong>CEBRASPE</div>
+<div class="st"><strong>20</strong>FGV</div>
+<div class="st"><strong>1</strong>Tópicos</div>
+</div>
+<div class="info">
+<h2>Como usar esta revisão</h2>
+<ol>
+<li><strong>Recall ativo:</strong> Leia o nome do tópico e os subtópicos. Tente discorrer em voz alta TUDO que sabe.</li>
+<li><strong>Verificação:</strong> Abra "Resumo + Pegadinhas" e confira o que acertou, esqueceu ou confundiu.</li>
+<li><strong>Teste:</strong> Resolva as questões-âncora mentalmente antes de revelar o gabarito.</li>
+</ol>
+</div>
+
+
+<div class="topic" id="topic-esp-cies-tribut-rias">
+<div class="card">
+<div class="hdr">
+<div class="left"><span class="rk">1</span><span class="nm">Espécies Tributárias</span></div>
+<div class="bds"><span class="bd t">68 questões</span><span class="bd c">CEBRASPE 27</span><span class="bd f">FGV 20</span></div>
+</div>
+<div class="chips"><span class="ch">Distinção entre Impostos, Taxas e Contribuições de Melhoria</span><span class="ch">Critério da Divisibilidade em Taxas (Serviços Públicos Específicos e Divisíveis)</span><span class="ch">Base de Cálculo das Taxas vs. Base de Cálculo dos Impostos</span><span class="ch">Contribuições Especiais e Contribuições Sociais (Art. 149 CF)</span><span class="ch">Empréstimos Compulsórios (Art. 148 CF)</span><span class="ch">Competência Tributária dos Entes Federativos</span></div>
+
+<div class="note-area">
+<button class="note-toggle" onclick="this.parentElement.classList.toggle('open')">&#128221; Minhas Anotações</button>
+<div class="note-content">
+<textarea class="note-text" data-topic="Espécies Tributárias" placeholder="Escreva suas anotações aqui..." oninput="debounceSaveNotes()"></textarea>
+</div>
+</div>
+
+<div class="layer">
+<button class="lbtn" onclick="tL(this)"><span class="arr">&#9654;</span><span class="lb">Resumo + Pegadinhas</span><span class="ht">— abra após o recall</span></button>
+<div class="lbd resumo"><p>As <strong>espécies tributárias</strong> são classificadas em cinco grandes categorias conforme a Constituição Federal. Os <strong>impostos</strong> (Art. 145 CF) têm fato gerador independente de qualquer atividade estatal específica, abrangendo situações que revelam capacidade contributiva (renda, patrimônio, consumo). As <strong>taxas</strong> (Art. 145, II CF) vinculam-se ao exercício do poder de polícia ou à utilização, efetiva ou potencial, de <strong>serviços públicos específicos e divisíveis</strong>, sendo essencial que a base de cálculo seja diferente da dos impostos. As <strong>contribuições de melhoria</strong> (Art. 145, III CF) decorrem da valorização do imóvel em decorrência de obra pública. Os <strong>empréstimos compulsórios</strong> (Art. 148 CF) constituem tributos com caráter temporário, instituídos pela União em casos de guerra externa, calamidade pública ou investimento público urgente. As <strong>contribuições especiais</strong> (Art. 149 CF) incluem contribuições sociais, de intervenção no domínio econômico e de interesse de categorias profissionais ou econômicas, sendo competência exclusiva da União. Cada espécie possui <strong>fato gerador</strong> específico e regime jurídico próprio, exigindo cuidado com a classificação correta para determinar a competência tributária adequada.</p><br><h3 style="color:var(--warn);font-size:.95rem;margin-bottom:10px">Pegadinhas da Banca</h3><div class="peg">Confundir taxa de iluminação pública (tributo por serviço público coletivo e geral, inconstitucional) com taxa de coleta de lixo (serviço específico e divisível, constitucional)</div><div class="peg">Acreditar que Estados podem instituir contribuições sociais ou CIDE Combustíveis; apenas a União possui essa competência exclusiva (Art. 149 CF)</div><div class="peg">Ignorar o requisito de 'divisibilidade' em serviços públicos: taxa sobre serviço genérico e indivisível viola a CF/88</div><div class="peg">Usar base de cálculo própria de impostos para taxas (ex.: valor venal do imóvel como base de taxa de serviço), violando Art. 145 §2º CF e Art. 77 CTN</div><div class="peg">Confundir taxa de fiscalização ambiental com imposto ambiental; a taxa deve ser proporcional aos custos da fiscalização estatal</div></div>
+</div>
+<div class="layer">
+<button class="lbtn" onclick="tL(this)"><span class="arr">&#9654;</span><span class="lb">Questões-Âncora</span><span class="ht">— resolva antes de revelar</span></button>
+<div class="lbd">
+<div class="anc">
+<span class="bt f">FGV</span>
+<div class="qt">O Município X, para custeio do serviço público coletivo e geral de iluminação das vias públicas, instituiu por lei municipal ordinária a taxa de iluminação pública. Também instituiu, por outra lei municipal ordinária, uma taxa de coleta domiciliar de lixo, pelo serviço público de retirada de lixo de cada imóvel individualmente considerado. Diante desse cenário, assinale a afirmativa correta.</div>
+<button class="rb" onclick="tA(this)">Revelar gabarito</button>
+<div class="ans">
+<div class="gab"></div>
+<div class="ins"></div>
+</div>
+</div>
+<div class="anc">
+<span class="bt f">FGV</span>
+<div class="qt">Sobre os tributos que podem ser instituídos, sempre temos de estar atentos sobre a competência de cada ente federativo. No que se refere aos Estados, estes podem instituir contribuições</div>
+<button class="rb" onclick="tA(this)">Revelar gabarito</button>
+<div class="ans">
+<div class="gab"></div>
+<div class="ins"></div>
+</div>
+</div></div>
+</div>
+</div>
+</div>
+
+
+</div><!-- /main-content -->
+
+<script>
+// ===== Review interactions =====
+function tL(b){b.classList.toggle('open');b.nextElementSibling.classList.toggle('show')}
+function tA(b){const a=b.nextElementSibling;a.classList.toggle('show');b.textContent=a.classList.contains('show')?'Ocultar gabarito':'Revelar gabarito'}
+
+// ===== Supabase Auth + Annotations =====
+let sb=null, currentUser=null;
+const PK=location.pathname;
+const COLORS=['#ffe066','#a8e6cf','#ff8b94','#c3aed6'];
+let hlActive=false, selColor=COLORS[0];
+
+function initSB(){
+  if(typeof SUPABASE_URL==='undefined'||SUPABASE_URL.includes('SEU-PROJETO'))return false;
+  sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);return true;
+}
+
+async function checkAuth(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(session){currentUser=session.user;showContent();loadAnno();}
+  else{document.getElementById('auth-gate').style.display='flex';}
+}
+
+function showContent(){
+  document.getElementById('auth-gate').style.display='none';
+  document.getElementById('main-content').style.display='block';
+  initHL();
+}
+
+async function handleLogout(){if(sb)await sb.auth.signOut();location.href='/index.html';}
+
+document.getElementById('login-form').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const em=document.getElementById('login-email').value;
+  const pw=document.getElementById('login-pass').value;
+  const er=document.getElementById('login-error');er.textContent='';
+  const{data,error}=await sb.auth.signInWithPassword({email:em,password:pw});
+  if(error){er.textContent='Email ou senha incorretos.';return;}
+  currentUser=data.user;showContent();loadAnno();
+});
+
+// ===== Highlights =====
+function initHL(){
+  const tb=document.createElement('div');tb.id='hl-toolbar';
+  tb.innerHTML=`<div class="hl-bar">${COLORS.map((c,i)=>`<button class="hl-color${i===0?' active':''}" data-c="${c}" style="background:${c}"></button>`).join('')}<button class="hl-eraser">&#9986;</button><span class="hl-sep">|</span><button class="hl-close">&times;</button></div>`;
+  document.body.appendChild(tb);
+  const tg=document.createElement('button');tg.id='hl-toggle';tg.innerHTML='&#9998;';tg.title='Marca-texto';
+  tg.onclick=()=>{hlActive=!hlActive;tb.classList.toggle('visible',hlActive);tg.classList.toggle('active',hlActive);document.body.classList.toggle('hl-mode',hlActive);};
+  document.body.appendChild(tg);
+  tb.querySelectorAll('.hl-color').forEach(b=>{b.onclick=()=>{selColor=b.dataset.c;tb.querySelectorAll('.hl-color').forEach(x=>x.classList.remove('active'));b.classList.add('active');}});
+  tb.querySelector('.hl-eraser').onclick=()=>{selColor=null;tb.querySelectorAll('.hl-color').forEach(x=>x.classList.remove('active'));};
+  tb.querySelector('.hl-close').onclick=()=>{hlActive=false;tb.classList.remove('visible');tg.classList.remove('active');document.body.classList.remove('hl-mode');};
+  document.addEventListener('mouseup',onSel);
+}
+
+function onSel(){
+  if(!hlActive)return;const s=window.getSelection();if(!s||s.isCollapsed||!s.toString().trim())return;
+  const r=s.getRangeAt(0);const m=document.getElementById('main-content');if(!m.contains(r.commonAncestorContainer))return;
+  if(selColor===null){rmHL(r);}else{applyHL(r,selColor);}
+  s.removeAllRanges();saveHL();
+}
+
+function applyHL(r,c){const mk=document.createElement('mark');mk.className='user-hl';mk.style.cssText=`background:${c};padding:0 1px;border-radius:2px`;try{r.surroundContents(mk);}catch(e){const f=r.extractContents();mk.appendChild(f);r.insertNode(mk);}}
+
+function rmHL(r){document.querySelectorAll('#main-content mark.user-hl').forEach(m=>{if(r.intersectsNode(m)){const p=m.parentNode;while(m.firstChild)p.insertBefore(m.firstChild,m);p.removeChild(m);p.normalize();}});}
+
+// ===== Notes =====
+let nTimer=null;
+function debounceSaveNotes(){clearTimeout(nTimer);nTimer=setTimeout(saveNotes,1500);}
+
+// ===== Persistence =====
+async function saveHL(){
+  const hls=[];document.querySelectorAll('#main-content mark.user-hl').forEach(m=>{
+    hls.push({text:m.textContent,color:m.style.backgroundColor,ctx:(m.previousSibling?.textContent||'').slice(-30)+'|||'+(m.nextSibling?.textContent||'').slice(0,30)});
+  });
+  const p={highlights:hls};
+  if(sb&&currentUser)await sb.from('annotations').upsert({user_id:currentUser.id,page_url:PK,type:'highlights',content:JSON.stringify(p)},{onConflict:'user_id,page_url,type'});
+  localStorage.setItem('hl_'+PK,JSON.stringify(p));
+}
+
+async function saveNotes(){
+  const n={};document.querySelectorAll('.note-text').forEach(t=>{if(t.value.trim())n[t.dataset.topic]=t.value;});
+  if(sb&&currentUser)await sb.from('annotations').upsert({user_id:currentUser.id,page_url:PK,type:'notes',content:JSON.stringify(n)},{onConflict:'user_id,page_url,type'});
+  localStorage.setItem('notes_'+PK,JSON.stringify(n));
+}
+
+async function loadAnno(){
+  let hd=null,nd=null;
+  if(sb&&currentUser){const{data}=await sb.from('annotations').select('type,content').eq('user_id',currentUser.id).eq('page_url',PK);if(data)data.forEach(r=>{if(r.type==='highlights')hd=JSON.parse(r.content);if(r.type==='notes')nd=JSON.parse(r.content);});}
+  if(!hd){const l=localStorage.getItem('hl_'+PK);if(l)hd=JSON.parse(l);}
+  if(!nd){const l=localStorage.getItem('notes_'+PK);if(l)nd=JSON.parse(l);}
+  if(hd)restoreHL(hd);if(nd)restoreNotes(nd);
+}
+
+function restoreHL(d){
+  if(!d.highlights||!d.highlights.length)return;
+  const w=document.createTreeWalker(document.getElementById('main-content'),NodeFilter.SHOW_TEXT);
+  const tn=[];while(w.nextNode())tn.push(w.currentNode);
+  d.highlights.forEach(h=>{for(const n of tn){const i=n.textContent.indexOf(h.text);if(i!==-1){const r=document.createRange();r.setStart(n,i);r.setEnd(n,i+h.text.length);const mk=document.createElement('mark');mk.className='user-hl';mk.style.cssText=`background:${h.color};padding:0 1px;border-radius:2px`;try{r.surroundContents(mk);}catch(e){}break;}}});
+}
+
+function restoreNotes(d){Object.entries(d).forEach(([t,v])=>{const ta=document.querySelector(`.note-text[data-topic="${t}"]`);if(ta){ta.value=v;ta.closest('.note-area')?.classList.add('has-content');}});}
+
+// ===== Init =====
+document.addEventListener('DOMContentLoaded',()=>{
+  if(initSB()){checkAuth();}
+  else{showContent();const hl=localStorage.getItem('hl_'+PK);if(hl)restoreHL(JSON.parse(hl));const nt=localStorage.getItem('notes_'+PK);if(nt)restoreNotes(JSON.parse(nt));}
+});
+</script>
+</body></html>
