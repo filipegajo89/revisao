@@ -1,0 +1,228 @@
+/* ============================================================
+   Revisão Ativa — Shared Styles (Auth + Highlights + Notes)
+   ============================================================ */
+
+/* --- Auth Gate --- */
+#auth-gate {
+  display: none;
+  position: fixed; inset: 0;
+  z-index: 9999;
+  background: #0d1117;
+  justify-content: center; align-items: center;
+  flex-direction: column;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+#auth-gate .login-box {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 12px;
+  padding: 40px 36px;
+  max-width: 380px;
+  width: 90%;
+  text-align: center;
+}
+#auth-gate h1 {
+  color: #e6edf3;
+  font-size: 1.4rem;
+  margin: 0 0 6px;
+}
+#auth-gate .subtitle {
+  color: #8b949e;
+  font-size: 0.85rem;
+  margin-bottom: 28px;
+}
+#auth-gate input {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  color: #e6edf3;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+}
+#auth-gate input:focus {
+  outline: none;
+  border-color: #58a6ff;
+}
+#auth-gate button[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  background: #238636;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 4px;
+}
+#auth-gate button[type="submit"]:hover {
+  background: #2ea043;
+}
+#login-error {
+  color: #f85149;
+  font-size: 0.85rem;
+  margin-top: 10px;
+  min-height: 1.2em;
+}
+
+/* --- Highlight Toggle Button --- */
+#hl-toggle {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: #21262d;
+  border: 1px solid #30363d;
+  color: #8b949e;
+  font-size: 1.3rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+#hl-toggle:hover, #hl-toggle.active {
+  background: #30363d;
+  color: #ffe066;
+  border-color: #ffe066;
+}
+
+/* --- Highlight Toolbar --- */
+#hl-toolbar {
+  position: fixed;
+  bottom: 80px;
+  right: 24px;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition: all 0.2s;
+}
+#hl-toolbar.visible {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(0);
+}
+.hl-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 10px;
+  padding: 8px 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+.hl-color {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.hl-color.active {
+  border-color: #e6edf3;
+  box-shadow: 0 0 0 2px rgba(230,237,243,0.3);
+}
+.hl-eraser, .hl-close {
+  background: none;
+  border: none;
+  color: #8b949e;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 4px;
+}
+.hl-eraser:hover { color: #f85149; }
+.hl-close:hover { color: #e6edf3; }
+.hl-sep {
+  color: #30363d;
+  margin: 0 2px;
+}
+
+/* --- Highlight mode cursor --- */
+body.hl-mode {
+  cursor: text;
+}
+body.hl-mode #main-content ::selection {
+  background: rgba(255,224,102,0.4);
+}
+
+/* --- Notes --- */
+.note-area {
+  margin: 10px 0 16px;
+}
+.note-toggle {
+  background: none;
+  border: 1px solid #30363d;
+  color: #8b949e;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.note-toggle:hover {
+  border-color: #58a6ff;
+  color: #58a6ff;
+}
+.note-area.has-content .note-toggle {
+  border-color: #ffe066;
+  color: #ffe066;
+}
+.note-content {
+  display: none;
+  margin-top: 8px;
+}
+.note-area.open .note-content {
+  display: block;
+}
+.note-text {
+  width: 100%;
+  min-height: 80px;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  color: #c9d1d9;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  resize: vertical;
+  box-sizing: border-box;
+}
+.note-text:focus {
+  outline: none;
+  border-color: #58a6ff;
+}
+
+/* --- Logout button --- */
+#logout-btn {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 1000;
+  background: #21262d;
+  border: 1px solid #30363d;
+  color: #8b949e;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+#logout-btn:hover {
+  border-color: #f85149;
+  color: #f85149;
+}
+
+/* --- Mobile adjustments --- */
+@media (max-width: 600px) {
+  #hl-toggle { bottom: 16px; right: 16px; width: 42px; height: 42px; }
+  #hl-toolbar { bottom: 66px; right: 16px; }
+  #logout-btn { top: 8px; right: 8px; font-size: 0.7rem; }
+}

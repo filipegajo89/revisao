@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revisão Ativa — Painel de Estudos</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/config.js"></script>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --border: #30363d;
+    --text: #e6edf3; --text-dim: #8b949e; --accent: #58a6ff;
+    --green: #238636; --green-h: #2ea043;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+  /* Auth Gate */
+  #auth-gate {
+    display: none; position: fixed; inset: 0; z-index: 9999;
+    background: var(--bg); justify-content: center; align-items: center; flex-direction: column;
+  }
+  .login-box {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 40px 36px; max-width: 380px; width: 90%; text-align: center;
+  }
+  .login-box h1 { font-size: 1.4rem; margin-bottom: 6px; }
+  .login-box .subtitle { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 28px; }
+  .login-box input {
+    display: block; width: 100%; padding: 10px 14px; margin-bottom: 12px;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+    color: var(--text); font-size: 0.95rem;
+  }
+  .login-box input:focus { outline: none; border-color: var(--accent); }
+  .login-box button[type="submit"] {
+    width: 100%; padding: 10px; background: var(--green); color: #fff;
+    border: none; border-radius: 6px; font-size: 0.95rem; font-weight: 600; cursor: pointer;
+  }
+  .login-box button[type="submit"]:hover { background: var(--green-h); }
+  #login-error { color: #f85149; font-size: 0.85rem; margin-top: 10px; min-height: 1.2em; }
+
+  /* Dashboard */
+  #dashboard { display: none; max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+  .dash-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 36px; padding-bottom: 20px; border-bottom: 1px solid var(--border);
+  }
+  .dash-header h1 { font-size: 1.6rem; font-weight: 700; }
+  .user-info { display: flex; align-items: center; gap: 12px; }
+  .user-email { color: var(--text-dim); font-size: 0.85rem; }
+  #logout-btn {
+    background: var(--surface); border: 1px solid var(--border); color: var(--text-dim);
+    padding: 6px 14px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;
+  }
+  #logout-btn:hover { border-color: #f85149; color: #f85149; }
+
+  /* Subject cards */
+  .subject-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .subject-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 24px; transition: border-color 0.2s;
+  }
+  .subject-card:hover { border-color: var(--accent); }
+  .subject-card h2 { font-size: 1.1rem; font-weight: 600; margin-bottom: 4px; }
+  .subject-card .count { color: var(--text-dim); font-size: 0.8rem; margin-bottom: 16px; }
+  .aula-list { list-style: none; }
+  .aula-list li { margin-bottom: 6px; }
+  .aula-list a {
+    color: var(--accent); text-decoration: none; font-size: 0.9rem;
+    display: flex; align-items: center; gap: 6px; padding: 4px 0;
+  }
+  .aula-list a:hover { text-decoration: underline; }
+  .aula-list a::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+  /* Stats bar */
+  .stats {
+    display: flex; gap: 24px; margin-bottom: 32px; flex-wrap: wrap;
+  }
+  .stat-item {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    padding: 16px 24px; flex: 1; min-width: 140px; text-align: center;
+  }
+  .stat-number { font-size: 1.8rem; font-weight: 700; color: var(--accent); }
+  .stat-label { font-size: 0.75rem; color: var(--text-dim); margin-top: 4px; }
+
+  @media (max-width: 600px) {
+    #dashboard { padding: 20px 12px; }
+    .dash-header { flex-direction: column; gap: 12px; text-align: center; }
+    .stats { gap: 8px; }
+    .stat-item { padding: 12px 16px; }
+    .stat-number { font-size: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Auth Gate -->
+<div id="auth-gate">
+  <div class="login-box">
+    <h1>Revisão Ativa</h1>
+    <p class="subtitle">Material de revisão para concursos</p>
+    <form id="login-form">
+      <input type="email" id="login-email" placeholder="Email" required autocomplete="email">
+      <input type="password" id="login-pass" placeholder="Senha" required autocomplete="current-password">
+      <button type="submit">Entrar</button>
+    </form>
+    <p id="login-error"></p>
+  </div>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboard">
+  <div class="dash-header">
+    <h1>Revisão Ativa</h1>
+    <div class="user-info">
+      <span class="user-email" id="user-email"></span>
+      <button id="logout-btn" onclick="handleLogout()">Sair</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-item">
+      <div class="stat-number" id="stat-materias">0</div>
+      <div class="stat-label">Matérias</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" id="stat-aulas">0</div>
+      <div class="stat-label">Aulas revisadas</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" id="stat-questoes">0</div>
+      <div class="stat-label">Questões analisadas</div>
+    </div>
+  </div>
+
+  <div class="subject-grid" id="subject-grid">
+    <!-- Populated by JS -->
+  </div>
+</div>
+
+<script>
+// ===== COURSE DATA =====
+// This is auto-updated by the skill when new reviews are generated
+const MATERIAS = {
+  "Contabilidade Geral e Avançada": {
+    folder: "contabilidade-geral-e-avancada",
+    aulas: [
+      { num: "00", title: "Aspectos Introdutórios", questoes: 70 },
+      { num: "01", title: "Patrimônio", questoes: 44 },
+      { num: "02", title: "Contas", questoes: 82 }
+    ]
+  },
+  "Direito Administrativo": {
+    folder: "direito-administrativo",
+    aulas: [
+      { num: "01", title: "Noções Iniciais de Direito Administrativo", questoes: 60 }
+    ]
+  }
+};
+
+// ===== Supabase Init =====
+let supabase_client = null;
+let currentUser = null;
+
+function initApp() {
+  if (typeof SUPABASE_URL !== 'undefined' && !SUPABASE_URL.includes('SEU-PROJETO')) {
+    const { createClient } = window.supabase;
+    supabase_client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    checkAuth();
+  } else {
+    showDashboard();
+  }
+}
+
+async function checkAuth() {
+  const { data: { session } } = await supabase_client.auth.getSession();
+  if (session) {
+    currentUser = session.user;
+    showDashboard();
+  } else {
+    document.getElementById('auth-gate').style.display = 'flex';
+  }
+}
+
+function showDashboard() {
+  document.getElementById('auth-gate').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  if (currentUser) {
+    document.getElementById('user-email').textContent = currentUser.email;
+  }
+  renderSubjects();
+}
+
+async function handleLogout() {
+  if (supabase_client) await supabase_client.auth.signOut();
+  location.reload();
+}
+
+// Login form
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('login-email').value;
+  const pass = document.getElementById('login-pass').value;
+  const errEl = document.getElementById('login-error');
+  errEl.textContent = '';
+  const { data, error } = await supabase_client.auth.signInWithPassword({ email, password: pass });
+  if (error) { errEl.textContent = 'Email ou senha incorretos.'; return; }
+  currentUser = data.user;
+  showDashboard();
+});
+
+// Render
+function renderSubjects() {
+  const grid = document.getElementById('subject-grid');
+  let totalMaterias = 0, totalAulas = 0, totalQuestoes = 0;
+
+  Object.entries(MATERIAS).forEach(([name, info]) => {
+    totalMaterias++;
+    const card = document.createElement('div');
+    card.className = 'subject-card';
+    const aulaLinks = info.aulas.map(a => {
+      totalAulas++;
+      totalQuestoes += a.questoes;
+      return `<li><a href="materias/${info.folder}/aula-${a.num}.html">Aula ${a.num} — ${a.title} <span style="color:#8b949e;font-size:0.75rem">(${a.questoes}q)</span></a></li>`;
+    }).join('');
+
+    card.innerHTML = `
+      <h2>${name}</h2>
+      <p class="count">${info.aulas.length} aula${info.aulas.length > 1 ? 's' : ''} revisada${info.aulas.length > 1 ? 's' : ''}</p>
+      <ul class="aula-list">${aulaLinks}</ul>`;
+    grid.appendChild(card);
+  });
+
+  document.getElementById('stat-materias').textContent = totalMaterias;
+  document.getElementById('stat-aulas').textContent = totalAulas;
+  document.getElementById('stat-questoes').textContent = totalQuestoes;
+}
+
+document.addEventListener('DOMContentLoaded', initApp);
+</script>
+</body>
+</html>
