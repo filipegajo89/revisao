@@ -72,6 +72,16 @@
   .aula-list a:hover { text-decoration: underline; }
   .aula-list a::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
 
+  /* Aula row with dual buttons */
+  .aula-row { display: flex; align-items: center; gap: 8px; }
+  .aula-link { flex: 1; }
+  .resumo-btn {
+    background: var(--surface); border: 1px solid var(--border); color: var(--text-dim);
+    padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; text-decoration: none;
+    transition: all 0.2s; flex-shrink: 0; letter-spacing: 0.5px;
+  }
+  .resumo-btn:hover { background: #f59e0b22; color: #f59e0b; border-color: #f59e0b; }
+
   /* Stats bar */
   .stats {
     display: flex; gap: 24px; margin-bottom: 32px; flex-wrap: wrap;
@@ -263,7 +273,7 @@ function renderSubjects() {
     const aulaLinks = info.aulas.map(a => {
       totalAulas++;
       totalQuestoes += a.questoes;
-      return `<li><a href="materias/${info.folder}/aula-${a.num}.html">Aula ${a.num} — ${a.title} <span style="color:#8b949e;font-size:0.75rem">(${a.questoes}q)</span></a></li>`;
+      return `<li class="aula-row"><a href="materias/${info.folder}/aula-${a.num}.html">Aula ${a.num} — ${a.title} <span style="color:#8b949e;font-size:0.75rem">(${a.questoes}q)</span></a><a class="resumo-btn" href="materias/${info.folder}/resumo-aula-${a.num}.html">Resumo</a></li>`;
     }).join('');
 
     card.innerHTML = `
