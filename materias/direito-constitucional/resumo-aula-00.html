@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resumo — Aula 00 · Direito Constitucional</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/assets/config.js"></script>
+<style>
+:root{--bg:#0c0e13;--bg2:#13161e;--bg3:#1a1e2a;--accent:#f59e0b;--accent-soft:rgba(245,158,11,.1);--green:#34d399;--green-soft:rgba(52,211,153,.08);--blue:#60a5fa;--blue-soft:rgba(96,165,250,.08);--red:#f87171;--red-soft:rgba(248,113,113,.07);--purple:#a78bfa;--purple-soft:rgba(167,139,250,.08);--text:#e4e6ec;--dim:#8a8fa4;--faint:#4e5268;--border:#252937;--r:14px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.8;padding:2.5rem 1.2rem}
+.wrap{max-width:720px;margin:0 auto}
+header{text-align:center;margin-bottom:2.5rem}
+.badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:3px;color:var(--accent);background:var(--accent-soft);padding:5px 16px;border-radius:20px;margin-bottom:1rem}
+header h1{font-family:'DM Serif Display',serif;font-size:2rem;font-weight:400;line-height:1.3;margin-bottom:.4rem}
+header .sub{color:var(--dim);font-size:.9rem}
+.stats{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:2rem}
+.st{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 16px;font-size:.8rem;text-align:center}
+.st strong{color:var(--accent);font-size:1.2rem;display:block}
+.sec{margin-bottom:2.5rem}
+.sec-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:3px;color:var(--faint);margin-bottom:.6rem}
+.sec h2{font-family:'DM Serif Display',serif;font-size:1.3rem;font-weight:400;margin-bottom:1rem}
+hr.div{border:none;height:1px;background:var(--border);margin:2rem 0}
+
+/* TOPIC CARD */
+.tc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;margin-bottom:1.5rem;transition:border-color .2s}
+.tc.pareto{border-color:rgba(245,158,11,.25)}
+.tc-hdr{display:flex;align-items:center;margin-bottom:.8rem;flex-wrap:wrap;gap:8px}
+.rk{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#000;font-weight:700;font-size:.8rem;flex-shrink:0}
+.tn{font-weight:700;font-size:1.05rem;flex:1}
+.pareto-badge{display:inline-flex;align-items:center;gap:4px;font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent);background:var(--accent-soft);padding:4px 12px;border-radius:20px;flex-shrink:0}
+.tc-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+.mt{font-size:.68rem;padding:3px 10px;border-radius:20px;background:var(--bg3);color:var(--dim);font-family:'JetBrains Mono',monospace}
+.mt.ceb{border:1px solid rgba(96,165,250,.3);color:var(--blue)}
+.mt.ot{border:1px solid rgba(245,158,11,.3);color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
+.ch{font-size:.73rem;padding:4px 12px;border-radius:20px;background:var(--bg3);color:var(--dim);border:1px solid var(--border)}
+
+/* ANALOGIA */
+.an{background:var(--bg2);border-radius:var(--r);padding:1.3rem;margin-bottom:1rem;border:1px solid var(--border)}
+.an .icon{font-size:1.6rem;margin-bottom:.4rem}
+.an p{font-size:.9rem;color:var(--dim);line-height:1.75}
+.an p strong{color:var(--text);font-weight:600}
+
+/* MNEMONIC */
+.mn{background:var(--bg3);border:1px dashed var(--accent);border-radius:var(--r);padding:1rem 1.3rem;margin-bottom:1rem;text-align:center}
+.mn .ms{font-family:'JetBrains Mono',monospace;font-size:.95rem;color:var(--accent);font-weight:600;letter-spacing:1px}
+.mn .me{font-size:.8rem;color:var(--dim);margin-top:.3rem}
+
+/* PAIR */
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1rem}
+.bx{padding:1.1rem;border-radius:var(--r);border:1px solid var(--border)}
+.bx.g{background:var(--green-soft);border-color:rgba(52,211,153,.15)}
+.bx.b{background:var(--blue-soft);border-color:rgba(96,165,250,.15)}
+.bx .bl{font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:2px;margin-bottom:.4rem}
+.bx.g .bl{color:var(--green)}
+.bx.b .bl{color:var(--blue)}
+.bx .bt{font-weight:700;font-size:.95rem;margin-bottom:.3rem}
+.bx p{font-size:.85rem;color:var(--dim);line-height:1.7}
+.bx p strong{color:var(--text);font-weight:600}
+
+/* RESUMO & PEGADINHAS */
+.rt{font-size:.9rem;line-height:1.8;color:var(--dim);margin-bottom:1rem}
+.rt strong{color:var(--text);font-weight:600}
+.pg{background:var(--red-soft);border-left:3px solid var(--red);padding:.8rem 1rem;margin-bottom:.6rem;border-radius:0 8px 8px 0;font-size:.85rem;color:var(--dim);line-height:1.7}
+.pg::before{content:"⚠ ";color:var(--red);font-weight:700}
+.pl{font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--red);margin-bottom:.5rem;margin-top:1rem}
+
+/* COLLAPSE */
+.cb{width:100%;text-align:left;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.88rem;display:flex;align-items:center;gap:8px;transition:border-color .2s;margin-top:.5rem}
+.cb:hover{border-color:var(--accent)}
+.cb .ar{transition:transform .2s;color:var(--accent);font-size:.75rem}
+.cb.open .ar{transform:rotate(90deg)}
+.cbd{display:none;padding:1rem 0 0;animation:fi .25s ease}
+.cbd.show{display:block}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+
+/* PARETO INFO */
+.pareto-info{background:var(--accent-soft);border:1px solid rgba(245,158,11,.15);border-radius:var(--r);padding:1.2rem 1.5rem;margin-bottom:2rem;font-size:.88rem;color:var(--dim);line-height:1.7}
+.pareto-info strong{color:var(--accent)}
+
+footer{text-align:center;margin-top:2rem;color:var(--faint);font-size:.72rem;font-family:'JetBrains Mono',monospace}
+
+/* Auth gate */
+#auth-gate{display:none;position:fixed;inset:0;z-index:9999;background:var(--bg);justify-content:center;align-items:center;flex-direction:column}
+.login-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:40px 36px;max-width:380px;width:90%;text-align:center}
+.login-box h1{font-size:1.4rem;margin-bottom:6px}
+.login-box .subtitle{color:var(--dim);font-size:.85rem;margin-bottom:28px}
+.login-box input{display:block;width:100%;padding:10px 14px;margin-bottom:12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.95rem;font-family:inherit}
+.login-box input:focus{outline:none;border-color:var(--accent)}
+.login-box button[type=submit]{width:100%;padding:10px;background:#238636;color:#fff;border:none;border-radius:6px;font-size:.95rem;font-weight:600;cursor:pointer;margin-top:4px}
+.login-box button[type=submit]:hover{background:#2ea043}
+#login-error{color:#f87171;font-size:.85rem;margin-top:10px;min-height:1.2em}
+
+.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+#logout-btn{background:var(--bg2);border:1px solid var(--border);color:var(--dim);padding:6px 14px;border-radius:6px;font-size:.75rem;cursor:pointer;font-family:inherit}
+#logout-btn:hover{border-color:var(--red);color:var(--red)}
+
+@media(max-width:580px){
+  header h1{font-size:1.5rem}
+  body{padding:1.5rem .8rem}
+  .pair{grid-template-columns:1fr}
+  .tc-hdr{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<!-- Auth Gate -->
+<div id="auth-gate">
+<div class="login-box">
+<h1>Resumo de Memorização</h1>
+<p class="subtitle">Faça login para acessar o material</p>
+<form id="login-form">
+<input type="email" id="login-email" placeholder="Email" required autocomplete="email">
+<input type="password" id="login-pass" placeholder="Senha" required autocomplete="current-password">
+<button type="submit">Entrar</button>
+</form>
+<p id="login-error"></p>
+</div>
+</div>
+
+<!-- Main Content -->
+<div id="main-content" style="display:none">
+<div class="top-bar">
+<a href="/index.html" class="back-link">&#8592; Painel de Estudos</a>
+<button id="logout-btn" onclick="handleLogout()">Sair</button>
+</div>
+<div class="wrap">
+<header>
+<div class="badge">Resumo de Memorização</div>
+<h1>Aula 00 — Direito Constitucional</h1>
+<p class="sub">402 questões analisadas · 8 tópicos</p>
+</header>
+<div class="stats">
+<div class="st"><strong>402</strong>Questões</div>
+<div class="st"><strong>304</strong>CEBRASPE</div>
+<div class="st"><strong>98</strong>FGV</div>
+<div class="st"><strong>8</strong>Tópicos</div>
+</div>
+<div class="pareto-info">
+<strong>Princípio de Pareto:</strong> 4 de 8 tópicos concentram <strong>80%</strong> das questões (322 de 402).
+Esses tópicos receberam tratamento personalizado com analogias, mnemônicos e comparações visuais — marcados com ⭐.
+</div>
+<div class="sec">
+<div class="sec-tag">Tópicos rankeados por cobrança</div>
+<h2>Do mais cobrado ao menos cobrado</h2>
+<div class="tc pareto">
+<div class="tc-hdr"><span class="rk">1</span><span class="tn">Princípios Fundamentais</span><span class="pareto-badge">⭐ Personalizado</span></div>
+<div class="tc-meta"><span class="mt">98q</span><span class="mt ceb">CEBRASPE 60</span><span class="mt ot">FGV 38</span></div>
+<div class="chips"><span class="ch">Regras vs Princípios</span><span class="ch">Princípios da República</span><span class="ch">Soberania</span><span class="ch">Cidadania</span><span class="ch">Dignidade da Pessoa Humana</span><span class="ch">Valores Sociais</span></div>
+<div class="an"><div class="icon">🏠</div><p>A Constituição é como a <strong>estrutura de uma casa</strong>: os <strong>princípios fundamentais</strong> (Art. 1º-5º) são a <strong>fundação</strong>, sobre a qual toda estrutura repousa. Assim como uma casa desaba sem boa fundação, a República não funciona sem respeitar seus <strong>fundamentos</strong> (soberania, cidadania, dignidade) e <strong>objetivos</strong> (igualdade, solidariedade). Qualquer lei contrária aos princípios fundamentais é como tentar construir um andar sobre alicerces rachados — não aguenta.</p></div><div class="pair">
+<div class="bx g"><div class="bl">Regras</div><div class="bt">Comportamento concreto</div><p>Tudo ou nada. Cumprimento total ou descumprimento. Quando entram em conflito, uma exclui a outra.</p></div>
+<div class="bx b"><div class="bl">Princípios</div><div class="bt">Diretrizes abstratas</div><p>Cumprimento parcial possível. Colisão apenas aparente. Harmonização no caso de conflito (ex: liberdade vs privacidade).</p></div>
+</div><div class="pair">
+<div class="bx g"><div class="bl">Democracia Representativa</div><div class="bt">Povo por representantes</div><p>Exercício indireto do poder por meio de representantes eleitos (Congresso, Senado).</p></div>
+<div class="bx b"><div class="bl">Democracia Participativa</div><div class="bt">Povo direto</div><p>Exercício direto do poder pelo povo (plebiscito, referendo, iniciativa popular).</p></div>
+</div><div class="mn"><div class="ms">SFSDVP</div><div class="me">**S**oberania, **F**undação (cidadania), **S**ocial (valores), **D**ignidade, **V**alores, **P**luralisma (de Art. 1º)</div></div><div class="mn"><div class="ms">DESNIR</div><div class="me">**D**esenvolvimento, **E**rradicar, **S**olidária, **N**acional, **I**gualdades, **R**egiões (de Art. 3º)</div></div>
+<button class="cb" onclick="tgl(this)"><span class="ar">▶</span> Resumo completo + Pegadinhas</button>
+<div class="cbd"><div class="rt">Os <strong>princípios fundamentais</strong> da Constituição Federal de 1988 formam a base ideológica, política e jurídica da República Federativa do Brasil, estruturando todo o ordenamento constitucional. A Constituição distingue fundamentalmente entre <strong>regras</strong> (mais concretas, aplicação &quot;tudo ou nada&quot;, quando entram em conflito, uma exclui a outra) e <strong>princípios</strong> (abstratos, susceptíveis de cumprimento parcial e colisão apenas aparente).<br><br>O <strong>Art. 1º</strong> estabelece os <strong>fundamentos da República Federativa do Brasil</strong>, testados 72 vezes nas questões. A República é constituída pelos Estados, Distrito Federal e Municípios (federalismo), sendo fundada em: <strong>soberania</strong> (autodeterminação), <strong>cidadania</strong> (pertencimento político), <strong>dignidade da pessoa humana</strong> (valor supremo), <strong>valores sociais do trabalho e da livre iniciativa</strong> (economia), e <strong>pluralismo político</strong> (diversidade). Estes fundamentos <strong>irradiam efeitos</strong> sobre toda interpretação constitucional.<br><br>O <strong>Art. 2º</strong> declara que o poder emana do povo, que o exerce por meio de <strong>representantes eleitos</strong> (democracia representativa) ou <strong>diretamente</strong> (democracia participativa — plebiscito, referendo, iniciativa popular).<br><br>O <strong>Art. 3º</strong> (testado 52 vezes) enumera os <strong>objetivos fundamentais</strong> da República: construir sociedade livre, justa e solidária; garantir desenvolvimento nacional; erradicar pobreza, marginalização e reduzir desigualdades sociais e regionais; promover bem de todos sem preconceitos de origem, raça, sexo, cor, idade ou quaisquer outras formas de discriminação.<br><br>O <strong>Art. 4º</strong> (44 menções) trata dos <strong>princípios nas relações internacionais da República</strong>: independência nacional, prevalência dos direitos humanos, autodeterminação dos povos, não intervenção, igualdade entre Estados, solução pacífica de conflitos, cooperação entre povos, condenação do terrorismo e do racismo.<br><br>O <strong>Art. 5º</strong> garante a <strong>igualdade de todos perante a lei</strong>, consagrando direitos e deveres <strong>individuais e coletivos</strong>: ninguém será discriminado por sexo, idade, condição social, profissão, convicções políticas ou religiosas. Inviolabilidade do direito à vida, liberdade, igualdade, segurança e propriedade.<br><br>Estes princípios não são meramente <strong>programáticos</strong> ou declaratórios; possuem <strong>força normativa imediata</strong> e <strong>eficácia irradiante</strong>, vinculando legislador, administrador e juiz.</div><div class="pl">Pegadinhas da banca</div><div class="pg">Princípios podem ser cumpridos parcialmente e sofrer colisão aparente (não exclusão total)</div><div class="pg">O povo exerce poder diretamente E por representantes eleitos (não apenas um)</div><div class="pg">Objetivos fundamentais incluem redução de desigualdades regionais (Art. 3º, III)</div><div class="pg">Não intervenção nas relações internacionais não é absoluta (salvo obrigações do direito internacional)</div><div class="pg">Igualdade material não significa igualdade formal (necessário trato desigual dos desiguais)</div></div>
+</div><div class="tc pareto">
+<div class="tc-hdr"><span class="rk">2</span><span class="tn">Classificação das Constituições</span><span class="pareto-badge">⭐ Personalizado</span></div>
+<div class="tc-meta"><span class="mt">90q</span><span class="mt ceb">CEBRASPE 68</span><span class="mt ot">FGV 22</span></div>
+<div class="chips"><span class="ch">Classificação quanto à origem</span><span class="ch">Classificação quanto ao conteúdo</span><span class="ch">Classificação quanto à extensão</span><span class="ch">Classificação quanto à forma</span><span class="ch">Classificação quanto à estabilidade</span></div>
+<div class="an"><div class="icon">📚</div><p>Classificar constituições é como <strong>catalogar livros na biblioteca</strong>. Você pode classificar pelo <strong>autor</strong> (quem escreveu? povo ou rei?), pelo <strong>tamanho</strong> (livro grosso com muitos temas ou livrinho com o essencial?), pelo <strong>material</strong> (papel comum ou encadernado?), pela <strong>durabilidade</strong> (desgasta rápido ou é resistente?). A <strong>CF 1988 é como um livro grosso, encadernado, escrito democraticamente e bem durável</strong> — analítica, democrática, rígida.</p></div><div class="pair">
+<div class="bx g"><div class="bl">Outorgada</div><div class="bt">Imposta</div><p>Sem participação popular. Imposta unilateralmente pelo poder dominante. Exemplos: CF 1824, 1937. Chamadas de 'Cartas'.</p></div>
+<div class="bx b"><div class="bl">Democrática</div><div class="bt">Promulgada</div><p>Com participação popular. Fruto de Assembleia Constituinte democrática. Exemplos: CF 1891, 1934, 1946, 1988.</p></div>
+</div><div class="pair">
+<div class="bx g"><div class="bl">Analítica</div><div class="bt">Extensa</div><p>Minuciosa, detalhada, muitos temas além dos constitucionais clássicos (educação, economia, meio ambiente). CF 1988 é analítica.</p></div>
+<div class="bx b"><div class="bl">Sintética</div><div class="bt">Breve</div><p>Contém apenas matérias essencialmente constitucionais. Menos página, menos detalhes.</p></div>
+</div><div class="mn"><div class="ms">ODCFE</div><div class="me">Critérios de classificação: **O**rigem, **D**imensão (conteúdo), **C**onteúdo (forma), **F**orma (escrita), **E**stabilidade</div></div><div class="mn"><div class="ms">DOARES</div><div class="me">Origem: **D**emocrática, **O**utorgada, **A**nalítica, **R**ígida, **E**xcepcionalmente flexível, **S**emirrígida</div></div>
+<button class="cb" onclick="tgl(this)"><span class="ar">▶</span> Resumo completo + Pegadinhas</button>
+<div class="cbd"><div class="rt">A <strong>classificação das constituições</strong> é essencial para compreender a natureza, origem, forma, conteúdo e durabilidade de diferentes ordenamentos jurídicos constitucionais. A doutrina propõe diversos critérios de classificação, testados 90 vezes nas questões.<br><br><strong>Quanto à origem</strong> (legitimidade e procedimento de elaboração):<br>- <strong>Outorgadas ou impostas</strong> (autoritárias, ditatoriais): Impostas sem participação popular, resultam de ato unilateral do poder dominante (monarca, ditador). Exemplos: CF brasileiras de 1824, 1937, 1967 e EC 1/1969. Chamadas de &quot;<strong>Cartas</strong>&quot; (Carta do Império, Carta de 1937).<br>- <strong>Democráticas, promulgadas ou populares</strong>: Nascidas de processo democrático com participação popular, normalmente via <strong>Assembleia Constituinte</strong> (órgão especialmente convocado). Exemplos: CF brasileiras de 1891, 1934, 1946, 1988 (Assembleia Nacional Constituinte).<br>- <strong>Cesaristas ou bonapartistas</strong>: Outorgadas, mas necessitam de <strong>referendo popular</strong> posterior (povo ratifica mas não participa elaboração).<br>- <strong>Dualistas ou pactuadas</strong>: Resultado do compromisso entre monarquia enfraquecida e burguesia ascendente (monarquias constitucionais — Reino Unido).<br><br><strong>Quanto ao conteúdo</strong>:<br>- <strong>Materiais (substanciais)</strong>: Contêm matéria constitucional própria (proteção de direitos, organização do Estado, princípios).<br>- <strong>Formais</strong>: Possuem conteúdo constitucionalmente relativo apenas por estarem no documento supremo, independentemente da matéria (até normas administrativas podem estar na Constituição formal).<br><br><strong>Quanto à extensão (amplitude)</strong>:<br>- <strong>Analíticas ou extensas</strong>: Minuciosas, detalhadas, contêm muitas matérias além das constitucionais clássicas (educação, saúde, economia, família, meio ambiente). <strong>CF 1988 é analítica</strong> (250+ artigos).<br>- <strong>Sintéticas ou breves</strong>: Contêm apenas matérias essencialmente constitucionais (direitos, organização estatal). Menos páginas, menos regulamentação.<br><br><strong>Quanto à forma (estrutura documental)</strong>:<br>- <strong>Escritas</strong>: Codificadas em documento formal único, texto solene.<br>- <strong>Não escritas ou consuetudinárias</strong>: Baseadas em costumes, tradições, jurisprudência, precedentes (Reino Unido é exemplo clássico).<br><br><strong>Quanto à mutabilidade/estabilidade (rigidez)</strong>:<br>- <strong>Rígidas</strong>: Exigem procedimento especial para emenda (maioria qualificada, quórum específico, dois turnos). <strong>CF 1988 é rígida</strong> (Art. 60).<br>- <strong>Flexíveis</strong>: Alteráveis como lei ordinária. Raras na prática moderna.<br>- <strong>Semirrígidas ou semiflexíveis</strong>: Algumas partes rígidas, outras flexíveis.</div><div class="pl">Pegadinhas da banca</div><div class="pg">CF 1988 é analítica (extensa), não sintética</div><div class="pg">Constitução dualista é a pactuada (não confundir com cesarista)</div><div class="pg">Constitucionalismo remete a Constituição escrita, não consuetudinárias</div><div class="pg">Emenda Constitucional não cria poder constituinte derivado em sentido estrito (há limitações)</div><div class="pg">A classificação 'formal vs material' refere-se ao conteúdo, não à forma de escrita</div></div>
+</div><div class="tc pareto">
+<div class="tc-hdr"><span class="rk">3</span><span class="tn">Aplicabilidade das Normas Constitucionais</span><span class="pareto-badge">⭐ Personalizado</span></div>
+<div class="tc-meta"><span class="mt">84q</span><span class="mt ceb">CEBRASPE 60</span><span class="mt ot">FGV 24</span></div>
+<div class="chips"><span class="ch">Normas autoexecutáveis</span><span class="ch">Normas programáticas</span><span class="ch">Normas de aplicação imediata</span><span class="ch">Normas de eficácia limitada</span><span class="ch">Normas de eficácia contida</span></div>
+<div class="an"><div class="icon">🚀</div><p>As <strong>normas constitucionais</strong> são como <strong>foguetes com combustíveis diferentes</strong>: alguns <strong>decolam imediatamente</strong> com <strong>eficácia plena</strong> (direitos fundamentais — saem voando na hora). Outros <strong>decolam mas podem ser contidos</strong> com <strong>eficácia contida</strong> (liberdades que a lei pode regular — decolam, mas podem ser freados). E outros <strong>ainda estão na rampa</strong> com <strong>eficácia limitada</strong> (programas sociais — precisam de lei para dispararem). Mas todos têm <strong>combustível</strong> (juridicidade), nenhum foguete é inerte.</p></div><div class="pair">
+<div class="bx g"><div class="bl">Eficácia Plena</div><div class="bt">Completa e direta</div><p>Autoaplicável, bastante em si mesma, não precisa de lei. Produz todos os efeitos desde o primeiro dia. Exemplo: direitos fundamentais.</p></div>
+<div class="bx b"><div class="bl">Eficácia Limitada</div><div class="bt">Incompleta, precisa de lei</div><p>Programática, não autoaplicável, depende de lei ordinária para surtir efeitos. Estabelece diretrizes. Exemplo: Art. 196 (saúde).</p></div>
+</div><div class="pair">
+<div class="bx g"><div class="bl">Autoexecutável</div><div class="bt">Sem necessidade de lei</div><p>Norma completa que se aplica diretamente (eficácia plena ou contida).</p></div>
+<div class="bx b"><div class="bl">Não autoexecutável</div><div class="bt">Necessita de lei</div><p>Norma incompleta que depende de lei para ser aplicada (eficácia limitada).</p></div>
+</div><div class="mn"><div class="ms">PLC</div><div class="me">Eficácia: **P**lena (autoexecutável), **L**imitada (programática, precisa lei), **C**ontida (autoexecutável mas lei reduz)</div></div><div class="mn"><div class="ms">IMEDIATO</div><div class="me">Direitos fundamentais têm aplicação **IMEDIATA** (não esperam lei ordinária)</div></div>
+<button class="cb" onclick="tgl(this)"><span class="ar">▶</span> Resumo completo + Pegadinhas</button>
+<div class="cbd"><div class="rt">O estudo da <strong>aplicabilidade das normas constitucionais</strong> é essencial para compreender o alcance e a eficácia de cada dispositivo constitucional. Nem todas as normas têm eficácia imediata: há um <strong>grau de eficácia</strong> que varia entre elas, testado 84 vezes nas questões.<br><br><strong>Doutrina Americana (clássica)</strong>:<br>- <strong>Normas autoexecutáveis (&quot;self-executing&quot;)</strong>: Completas, bastantes em si mesmas, aplicáveis sem necessidade de complementação legislativa. Produzem efeitos jurídicos imediatos.<br>- <strong>Normas não autoexecutáveis</strong>: Incompletas, dependem de lei complementar para serem aplicadas.<br><br><strong>Classificação de José Afonso da Silva (mais aceita no Brasil)</strong>:<br><br>A partir da <strong>aplicabilidade</strong>, as normas dividem-se em <strong>três grupos</strong>:<br><br>1. <strong>Normas de eficácia plena</strong>: Autoaplicáveis, não dependem de lei infraconstitucional para surtir efeitos jurídicos. Desde a entrada em vigor da Constituição (5 out 1988), produzem todos os seus efeitos. Exemplos: Art. 5º (direitos e garantias), Art. 1º (fundamentos).<br><br>2. <strong>Normas de eficácia contida</strong>: Autoaplicáveis, mas sua eficácia e alcance podem ser reduzidos por lei infraconstitucional. Produzem efeitos imediatos, mas podem sofrer restrições. Exemplo: Art. 5º, XIII (liberdade de trabalho) — eficácia contida, pois lei pode estabelecer profissões regulamentadas.<br><br>3. <strong>Normas de eficácia limitada (ou programáticas)</strong>: Não autoexecutáveis, dependem de lei ordinária para serem aplicadas. Estabelecem programas, objetivos, diretrizes para futuras ações do Estado. Exemplos: Art. 196 (saúde como direito), Art. 205 (educação). O Art. 5º (11 menções), Art. 2º (5 menções) e Art. 224 (3 menções) trazem questões sobre aplicabilidade.<br><br><strong>Efeitos das normas constitucionais</strong>:<br>- Todas as normas constitucionais têm <strong>juridicidade</strong>: são imperativas, cogentes, surtem efeitos jurídicos.<br>- A diferença está no <strong>grau de eficácia</strong> e <strong>imediatismo</strong> da aplicação.<br>- Normas de eficácia limitada obrigam o Estado a legislar, mas até lá não deixam de produzir algum efeito (vinculam o intérprete, impedem regressão).<br><br><strong>Aplicabilidade imediata (Art. 5º, §1º)</strong>: As normas definidoras de direitos fundamentais têm aplicação imediata. Não precisam de lei infraconstitucional.</div><div class="pl">Pegadinhas da banca</div><div class="pg">Todas as normas constitucionais têm juridicidade e surtem efeitos (diferença está no GRAU)</div><div class="pg">Normas de eficácia limitada ainda produzem algum efeito mesmo sem lei (não são completamente inertes)</div><div class="pg">Eficácia contida = pode ter sua eficácia REDUZIDA por lei, não ampliada</div><div class="pg">Art. 5º §1º garante aplicação IMEDIATA, não precisam de lei ordinária</div><div class="pg">Não confundir: normas programáticas são de eficácia limitada, mas vinculam o intérprete</div></div>
+</div><div class="tc pareto">
+<div class="tc-hdr"><span class="rk">4</span><span class="tn">Poder Constituinte</span><span class="pareto-badge">⭐ Personalizado</span></div>
+<div class="tc-meta"><span class="mt">50q</span><span class="mt ceb">CEBRASPE 44</span><span class="mt ot">FGV 6</span></div>
+<div class="chips"><span class="ch">Poder Constituinte Originário</span><span class="ch">Poder Constituinte Derivado</span><span class="ch">Soberania do Poder Constituinte</span><span class="ch">Características</span><span class="ch">Limitações</span></div>
+<div class="an"><div class="icon">👥</div><p>O <strong>poder constituinte</strong> é como <strong>o poder de um arquiteto</strong> na construção de um prédio: o <strong>poder constituinte originário</strong> é quando o arquiteto <strong>cria o prédio do zero</strong> (Constituinte de 1988), e o <strong>poder constituinte derivado</strong> é quando ele <strong>faz reformas</strong> no prédio já existente (Emendas Constitucionais), respeitando a <strong>estrutura original</strong> e as <strong>partes protegidas</strong> (cláusulas pétreas — fundações não mexem).</p></div><div class="pair">
+<div class="bx g"><div class="bl">Poder Constituinte Originário</div><div class="bt">Cria a Constituição</div><p>Soberano, ilimitado, cria Constituição nova via Assembleia. Exemplo: CF 1988. Não vinculado à Constituição anterior.</p></div>
+<div class="bx b"><div class="bl">Poder Constituinte Derivado</div><div class="bt">Reforma a Constituição</div><p>Limitado pela Constituição (cláusulas pétreas, procedimento). Modifica, emenda constituição existente. Exemplo: Emendas Constitucionais.</p></div>
+</div><div class="mn"><div class="ms">SOPIN</div><div class="me">Poder Constituinte: **SO**berano, **P**ermanente, **I**nalienável, **N**ão limitado (originário)</div></div><div class="mn"><div class="ms">CEFOR</div><div class="me">Cláusulas pétreas (Art. 60 §4º): **C**orpo federativo, **E**stado, **F**orma de governo, **O**rganização, **R**egras/Direitos</div></div>
+<button class="cb" onclick="tgl(this)"><span class="ar">▶</span> Resumo completo + Pegadinhas</button>
+<div class="cbd"><div class="rt">O <strong>poder constituinte</strong> é a competência de criar ou modificar a Constituição. Originalmente teorizado pelo abade francês <strong>Emmanuel Sieyès</strong> no século XVIII (obra &quot;O que é o Terceiro Estado?&quot;), marca a transição de legitimação divina para legitimação popular do poder.<br><br><strong>Conceito fundamental</strong>:<br><strong>Poder constituinte</strong> é aquele que cria ou atualiza a Constituição. É exercido pelo legislador constituinte. Distingue-se dos <strong>poderes constituídos</strong> (Executivo, Legislativo, Judiciário) que são criados pela Constituição.<br><br>A teoria do poder constituinte aplica-se apenas a <strong>Estados com Constituição escrita e rígida</strong> (como Brasil).<br><br><strong>Características do Poder Constituinte Originário</strong>:<br>- <strong>Soberano</strong>: Não está subordinado a nenhuma norma anterior; é a fonte de toda legitimidade jurídica.<br>- <strong>Permanente</strong>: Não se esgota com o exercício; sempre pode atualizar a Constituição.<br>- <strong>Inalienável</strong>: Não pode ser transferido; pertence ao povo.<br>- <strong>Ilimitado</strong>: Não há limites jurídicos ao seu exercício (teoricamente).<br><br><strong>Poder Constituinte Originário</strong> (Art. 60 - 13 menções):<br>Aquele que cria uma Constituição inteiramente nova, normalmente através de <strong>Assembleia Constituinte</strong>. Exemplos: CF 1891, 1934, 1946, 1988. Não está vinculado à Constituição anterior; pode romper completamente com ela.<br><br><strong>Poder Constituinte Derivado ou Reformador</strong>:<br>Aquele que modifica, emenda, a Constituição existente. Está <strong>limitado</strong> pela própria Constituição:<br>- Só pode exercer-se nos moldes por ela previstos<br>- Sujeita-se às <strong>limitações expressas</strong> (cláusulas pétreas — Art. 60 §4º: forma federativa, separação de poderes, direitos individuais, voto direto)<br>- Sujeita-se às <strong>limitações implícitas</strong> (princípios fundamentais, identidade da Constituição)<br><br>Quanto à <strong>mutação constitucional</strong>: A Constituição pode se modificar sem emenda formal, por interpretação evolutiva, costumes constitucionais e jurisprudência (mudança não formal).<br><br><strong>Art. 3º</strong> (1 menção) sobre objetivos fundamentais vincula o poder constituinte derivado a objetivos sociais.</div><div class="pl">Pegadinhas da banca</div><div class="pg">Poder constituinte originário é ILIMITADO teoricamente, mas originário derivado é LIMITADO</div><div class="pg">Cláusulas pétreas (Art. 60 §4º) impedem emenda, não criação de nova Constituição</div><div class="pg">Poder constituinte é INALIENÁVEL e PERMANENTE (povo sempre pode constituir)</div><div class="pg">Mutação constitucional altera interpretação, não texto formal (não é emenda)</div><div class="pg">Assembleia Constituinte tem poder constituinte originário, não poder legislativo comum</div></div>
+</div><div class="tc">
+<div class="tc-hdr"><span class="rk">5</span><span class="tn">Hierarquia das Normas</span></div>
+<div class="tc-meta"><span class="mt">26q</span><span class="mt ceb">CEBRASPE 20</span><span class="mt ot">FGV 6</span></div>
+<div class="chips"><span class="ch">Pirâmide de Kelsen</span><span class="ch">Constituição como ápice</span><span class="ch">Lei complementar vs Lei ordinária</span></div>
+<button class="cb" onclick="tgl(this)"><span class="ar">▶</span> Ver resumo e pegadinhas</button>
+<div class="cbd"><div class="rt">A <strong>hierarquia das normas</strong> é fundamental para compreender o ordenamento jurídico brasileiro. Utiliza-se o modelo da <strong>Pirâmide de Kelsen</strong>, criado pelo jurista austríaco <strong>Hans Kelsen</strong>, para visualizar a subordinação das normas inferiores às superiores.<br><br><strong>Estrutura hierárquica</strong>:<br>No topo da pirâmide está a <strong>Constituição Federal</strong>, como norma suprema. Abaixo dela, dividem-se as normas inferiores:<br><br>1. <strong>Leis Complementares</strong>: Regulam matérias específicas indicadas na CF (exigem maioria qualificada para aprovação).<br>2. <strong>Leis Ordinárias</strong>: Legislação geral, aprovada por maioria simples.<br>3. <strong>Leis Delegadas</strong>, <strong>Decretos Legislativos</strong>, <strong>Resoluções do Congresso</strong>.<br>4. <strong>Decretos Regulamentares</strong> (Executivo): Regulamentam leis já existentes.<br>5. <strong>Normas Administrativas</strong>, <strong>Portarias</strong>, etc.<br><br>Toda norma inferior <strong>deve conformidade</strong> com as superiores. Uma lei ordinária que contrarie a Constituição é inconstitucional e deve ser declarada nula.<br><br>O <strong>Art. 5º</strong> (4 menções) trata de direitos e garantias, que vinculam toda a hierarquia normativa.</div><div class="pl">Pegadinhas da banca</div><div class="pg">Lei complementar não é hierarquicamente superior a lei ordinária, mas complementa matérias específicas da CF</div><div class="pg">Emenda Constitucional NÃO pode violar cláusulas pétreas (limite ao poder constituinte derivado)</div><div class="pg">Decretos regulamentares não podem inovar a ordem jurídica; apenas executam lei existente</div><div class="pg">Tratados internacionais sobre direitos humanos têm status de norma supraconstitucional (Emenda 45/2004)</div></div>
+</div><div class="tc">
+<div class="tc-hdr"><span class="rk">6</span><span class="tn">Constitucionalismo e Neoconstitucionalismo</span></div>
+<div class="tc-meta"><span class="mt">25q</span><span class="mt ceb">CEBRASPE 24</span><span class="mt ot">FGV 1</span></div>
+<div class="chips"><span class="ch">Constitucionalismo clássico</span><span class="ch">Neoconstitucionalismo</span><span class="ch">Força normativa da Constituição</span></div>
+<button class="cb" onclick="tgl(this)"><span class="ar">▶</span> Ver resumo e pegadinhas</button>
+<div class="cbd"><div class="rt">O <strong>constitucionalismo</strong> refere-se ao movimento político e jurídico que defende a existência de uma <strong>Constituição escrita, rígida</strong> como documento supremo que limita o poder estatal.<br><br><strong>Sentidos do constitucionalismo</strong> (segundo André Ramos Tavares):<br><br>1. <strong>Sentido histórico</strong>: Movimento que emerge no contexto das revoluções do século XVII-XVIII (Revolução Americana 1776, Francesa 1789), buscando limitar poder absoluto.<br><br>2. <strong>Sentido político</strong>: Ideologia que defende constituição escrita como instrumento de limitação do poder.<br><br>3. <strong>Sentido jurídico</strong>: Técnica de <strong>supremacia constitucional</strong>, onde a Constituição é norma fundamental vinculante.<br><br>4. <strong>Sentido sociológico</strong>: Realidade social onde a Constituição reflete estrutura de forças sociais.<br><br><strong>Neoconstitucionalismo</strong>:<br>Corrente moderna que enfatiza a <strong>força normativa da Constituição</strong>. Características:<br>- <strong>Força vinculante</strong> dos princípios constitucionais (não apenas valores programáticos).<br>- <strong>Ativismo judiciário</strong>: Juízes aplicam constituição diretamente, não apenas leis.<br>- <strong>Interpretação evolutiva</strong>: Constituição acompanha transformações sociais.<br>- <strong>Dignidade da pessoa humana</strong> como centro do ordenamento.<br><br>O <strong>Art. 3º</strong> (1 menção) vincula o poder constituinte aos objetivos fundamentais.</div><div class="pl">Pegadinhas da banca</div><div class="pg">Constitucionalismo clássico visa LIMITAR o poder estatal (não ampliar)</div><div class="pg">Neoconstitucionalismo não descarta positivismo, mas evolutivo</div><div class="pg">Força normativa da Constituição não significa que todas as normas têm eficácia plena</div><div class="pg">Ativismo judiciário em neoconstitucionalismo deve respeitar separação de poderes</div></div>
+</div><div class="tc">
+<div class="tc-hdr"><span class="rk">7</span><span class="tn">Constituição: Estrutura e Elementos</span></div>
+<div class="tc-meta"><span class="mt">16q</span><span class="mt ceb">CEBRASPE 15</span><span class="mt ot">FGV 1</span></div>
+<div class="chips"><span class="ch">Preâmbulo</span><span class="ch">Parte Dogmática</span><span class="ch">Parte Orgânica</span><span class="ch">Ato das Disposições Constitucionais Transitórias</span></div>
+<button class="cb" onclick="tgl(this)"><span class="ar">▶</span> Ver resumo e pegadinhas</button>
+<div class="cbd"><div class="rt">A <strong>Constituição Federal de 1988</strong> possui uma estrutura formal dividida em partes com funções específicas.<br><br><strong>Elementos constitucionais</strong> (segundo Jorge Miranda):<br><br>1. <strong>Preâmbulo</strong>: Não é norma jurídica, apenas declara as motivações e intenções dos constituintes. Invocação dos valores que fundamentam a Constituição (democracia, direitos, paz, bem comum).<br><br>2. <strong>Parte Dogmática</strong>: Contém direitos e deveres dos cidadãos. Divide-se em:<br>   - Títulos I-III: Direitos fundamentais (direitos e deveres individuais, direitos sociais, nacionalidade)<br>   - Títulos IV-VII: Organização do Estado (organização político-administrativa)<br><br>3. <strong>Parte Orgânica</strong>: Estrutura e funcionamento dos órgãos do poder (Executivo, Legislativo, Judiciário).<br><br>4. <strong>Ato das Disposições Constitucionais Transitórias (ADCT)</strong>: Normas de transição entre a Constituição anterior (1967) e a nova (1988). Tem força de Emenda Constitucional desde a Emenda 26/2000.<br><br><strong>Características estruturais da CF 1988</strong>:<br>- <strong>Analítica</strong>: Contém 250+ artigos (muito detalhada)<br>- <strong>Rígida</strong>: Exige procedimento especial para emendas<br>- <strong>Democrática</strong>: Fruto de Assembleia Constituinte democrática</div><div class="pl">Pegadinhas da banca</div><div class="pg">Preâmbulo NÃO é norma jurídica (não vincula diretamente), apenas expressa intenções</div><div class="pg">ADCT tem força de Emenda Constitucional (não é norma transitória inferior)</div><div class="pg">Constituição não é apenas lista de direitos (inclui organização do Estado)</div><div class="pg">Rígida ≠ imutável (pode ser emendada, mas por procedimento especial)</div></div>
+</div><div class="tc">
+<div class="tc-hdr"><span class="rk">8</span><span class="tn">Sentidos de Constituição</span></div>
+<div class="tc-meta"><span class="mt">13q</span><span class="mt ceb">CEBRASPE 13</span></div>
+<div class="chips"><span class="ch">Sentido sociológico</span><span class="ch">Sentido jurídico</span><span class="ch">Sentido político</span></div>
+<button class="cb" onclick="tgl(this)"><span class="ar">▶</span> Ver resumo e pegadinhas</button>
+<div class="cbd"><div class="rt">O termo <strong>Constituição</strong> pode ser compreendido sob diferentes perspectivas e sentidos:<br><br><strong>Sentido Sociológico</strong> (Ferdinand Lassalle):<br>A Constituição é a <strong>soma dos fatores reais de poder</strong> de uma sociedade (forças políticas, econômicas, militares). É a realidade fática anterior ao documento. A Constituição escrita (folha de papel) só durará se corresponder aos fatores reais; caso contrário, será burlada.<br><br><strong>Sentido Jurídico</strong> (Hans Kelsen):<br>A Constituição é a <strong>norma fundamental hipotética</strong> que confere validade a todo sistema jurídico. É o ápice da pirâmide normativa, norma suprema que vincula todas as demais.<br><br><strong>Sentido Político</strong> (Carl Schmitt):<br>A Constituição é a <strong>decisão política fundamental</strong> de um povo sobre como quer viver. Mais que norma, é expressão da vontade constituinte do povo.<br><br><strong>Sentido Formal</strong>:<br>A Constituição é o <strong>documento solene</strong> que reúne as normas constitucionais em texto único, escrito e codificado (como CF 1988).<br><br>Essas perspectivas não são excludentes; complementam-se na compreensão moderna de Constituição como <strong>norma jurídica suprema</strong> que reflete fatores sociais reais e vontade política popular.</div><div class="pl">Pegadinhas da banca</div><div class="pg">Constituição sociológica não nega validade jurídica, apenas explica sua durabilidade</div><div class="pg">Constituição jurídica não é apenas folha de papel (tem força obrigatória)</div><div class="pg">Sentido político não significa que Constituição seja vontade de uma pessoa (é do povo)</div><div class="pg">Sentido formal distingue Constituição em documento único vs direito constitucional disperso</div></div>
+</div>
+</div>
+<footer>Direito Constitucional · Aula 00 · Gerado a partir de 402 questões</footer>
+</div>
+</div><!-- /main-content -->
+
+<script>
+// ===== Resumo interactions =====
+function tgl(b){b.classList.toggle('open');b.nextElementSibling.classList.toggle('show')}
+
+// ===== Supabase Auth =====
+let sb=null, currentUser=null;
+
+function initSB(){
+  if(typeof SUPABASE_URL==='undefined'||SUPABASE_URL.includes('SEU-PROJETO'))return false;
+  sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);return true;
+}
+
+async function checkAuth(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(session){currentUser=session.user;showContent();}
+  else{document.getElementById('auth-gate').style.display='flex';}
+}
+
+function showContent(){
+  document.getElementById('auth-gate').style.display='none';
+  document.getElementById('main-content').style.display='block';
+}
+
+async function handleLogout(){if(sb)await sb.auth.signOut();location.href='/index.html';}
+
+document.getElementById('login-form').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const em=document.getElementById('login-email').value;
+  const pw=document.getElementById('login-pass').value;
+  const er=document.getElementById('login-error');er.textContent='';
+  const{data,error}=await sb.auth.signInWithPassword({email:em,password:pw});
+  if(error){er.textContent='Email ou senha incorretos.';return;}
+  currentUser=data.user;showContent();
+});
+
+// ===== Init =====
+document.addEventListener('DOMContentLoaded',()=>{
+  if(initSB()){checkAuth();}
+  else{showContent();}
+});
+</script>
+</body>
+</html>

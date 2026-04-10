@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resumo — Aula 00 · TI</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/assets/config.js"></script>
+<style>
+:root{--bg:#0c0e13;--bg2:#13161e;--bg3:#1a1e2a;--accent:#f59e0b;--accent-soft:rgba(245,158,11,.1);--green:#34d399;--green-soft:rgba(52,211,153,.08);--blue:#60a5fa;--blue-soft:rgba(96,165,250,.08);--red:#f87171;--red-soft:rgba(248,113,113,.07);--purple:#a78bfa;--purple-soft:rgba(167,139,250,.08);--text:#e4e6ec;--dim:#8a8fa4;--faint:#4e5268;--border:#252937;--r:14px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.8;padding:2.5rem 1.2rem}
+.wrap{max-width:720px;margin:0 auto}
+header{text-align:center;margin-bottom:2.5rem}
+.badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:3px;color:var(--accent);background:var(--accent-soft);padding:5px 16px;border-radius:20px;margin-bottom:1rem}
+header h1{font-family:'DM Serif Display',serif;font-size:2rem;font-weight:400;line-height:1.3;margin-bottom:.4rem}
+header .sub{color:var(--dim);font-size:.9rem}
+.stats{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:2rem}
+.st{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 16px;font-size:.8rem;text-align:center}
+.st strong{color:var(--accent);font-size:1.2rem;display:block}
+.sec{margin-bottom:2.5rem}
+.sec-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:3px;color:var(--faint);margin-bottom:.6rem}
+.sec h2{font-family:'DM Serif Display',serif;font-size:1.3rem;font-weight:400;margin-bottom:1rem}
+hr.div{border:none;height:1px;background:var(--border);margin:2rem 0}
+
+/* TOPIC CARD */
+.tc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;margin-bottom:1.5rem;transition:border-color .2s}
+.tc.pareto{border-color:rgba(245,158,11,.25)}
+.tc-hdr{display:flex;align-items:center;margin-bottom:.8rem;flex-wrap:wrap;gap:8px}
+.rk{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#000;font-weight:700;font-size:.8rem;flex-shrink:0}
+.tn{font-weight:700;font-size:1.05rem;flex:1}
+.pareto-badge{display:inline-flex;align-items:center;gap:4px;font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent);background:var(--accent-soft);padding:4px 12px;border-radius:20px;flex-shrink:0}
+.tc-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+.mt{font-size:.68rem;padding:3px 10px;border-radius:20px;background:var(--bg3);color:var(--dim);font-family:'JetBrains Mono',monospace}
+.mt.ceb{border:1px solid rgba(96,165,250,.3);color:var(--blue)}
+.mt.ot{border:1px solid rgba(245,158,11,.3);color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
+.ch{font-size:.73rem;padding:4px 12px;border-radius:20px;background:var(--bg3);color:var(--dim);border:1px solid var(--border)}
+
+/* ANALOGIA */
+.an{background:var(--bg2);border-radius:var(--r);padding:1.3rem;margin-bottom:1rem;border:1px solid var(--border)}
+.an .icon{font-size:1.6rem;margin-bottom:.4rem}
+.an p{font-size:.9rem;color:var(--dim);line-height:1.75}
+.an p strong{color:var(--text);font-weight:600}
+
+/* MNEMONIC */
+.mn{background:var(--bg3);border:1px dashed var(--accent);border-radius:var(--r);padding:1rem 1.3rem;margin-bottom:1rem;text-align:center}
+.mn .ms{font-family:'JetBrains Mono',monospace;font-size:.95rem;color:var(--accent);font-weight:600;letter-spacing:1px}
+.mn .me{font-size:.8rem;color:var(--dim);margin-top:.3rem}
+
+/* PAIR */
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1rem}
+.bx{padding:1.1rem;border-radius:var(--r);border:1px solid var(--border)}
+.bx.g{background:var(--green-soft);border-color:rgba(52,211,153,.15)}
+.bx.b{background:var(--blue-soft);border-color:rgba(96,165,250,.15)}
+.bx .bl{font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:2px;margin-bottom:.4rem}
+.bx.g .bl{color:var(--green)}
+.bx.b .bl{color:var(--blue)}
+.bx .bt{font-weight:700;font-size:.95rem;margin-bottom:.3rem}
+.bx p{font-size:.85rem;color:var(--dim);line-height:1.7}
+.bx p strong{color:var(--text);font-weight:600}
+
+/* RESUMO & PEGADINHAS */
+.rt{font-size:.9rem;line-height:1.8;color:var(--dim);margin-bottom:1rem}
+.rt strong{color:var(--text);font-weight:600}
+.pg{background:var(--red-soft);border-left:3px solid var(--red);padding:.8rem 1rem;margin-bottom:.6rem;border-radius:0 8px 8px 0;font-size:.85rem;color:var(--dim);line-height:1.7}
+.pg::before{content:"⚠ ";color:var(--red);font-weight:700}
+.pl{font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--red);margin-bottom:.5rem;margin-top:1rem}
+
+/* COLLAPSE */
+.cb{width:100%;text-align:left;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.88rem;display:flex;align-items:center;gap:8px;transition:border-color .2s;margin-top:.5rem}
+.cb:hover{border-color:var(--accent)}
+.cb .ar{transition:transform .2s;color:var(--accent);font-size:.75rem}
+.cb.open .ar{transform:rotate(90deg)}
+.cbd{display:none;padding:1rem 0 0;animation:fi .25s ease}
+.cbd.show{display:block}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+
+/* PARETO INFO */
+.pareto-info{background:var(--accent-soft);border:1px solid rgba(245,158,11,.15);border-radius:var(--r);padding:1.2rem 1.5rem;margin-bottom:2rem;font-size:.88rem;color:var(--dim);line-height:1.7}
+.pareto-info strong{color:var(--accent)}
+
+footer{text-align:center;margin-top:2rem;color:var(--faint);font-size:.72rem;font-family:'JetBrains Mono',monospace}
+
+/* Auth gate */
+#auth-gate{display:none;position:fixed;inset:0;z-index:9999;background:var(--bg);justify-content:center;align-items:center;flex-direction:column}
+.login-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:40px 36px;max-width:380px;width:90%;text-align:center}
+.login-box h1{font-size:1.4rem;margin-bottom:6px}
+.login-box .subtitle{color:var(--dim);font-size:.85rem;margin-bottom:28px}
+.login-box input{display:block;width:100%;padding:10px 14px;margin-bottom:12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.95rem;font-family:inherit}
+.login-box input:focus{outline:none;border-color:var(--accent)}
+.login-box button[type=submit]{width:100%;padding:10px;background:#238636;color:#fff;border:none;border-radius:6px;font-size:.95rem;font-weight:600;cursor:pointer;margin-top:4px}
+.login-box button[type=submit]:hover{background:#2ea043}
+#login-error{color:#f87171;font-size:.85rem;margin-top:10px;min-height:1.2em}
+
+.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+#logout-btn{background:var(--bg2);border:1px solid var(--border);color:var(--dim);padding:6px 14px;border-radius:6px;font-size:.75rem;cursor:pointer;font-family:inherit}
+#logout-btn:hover{border-color:var(--red);color:var(--red)}
+
+@media(max-width:580px){
+  header h1{font-size:1.5rem}
+  body{padding:1.5rem .8rem}
+  .pair{grid-template-columns:1fr}
+  .tc-hdr{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<!-- Auth Gate -->
+<div id="auth-gate">
+<div class="login-box">
+<h1>Resumo de Memorização</h1>
+<p class="subtitle">Faça login para acessar o material</p>
+<form id="login-form">
+<input type="email" id="login-email" placeholder="Email" required autocomplete="email">
+<input type="password" id="login-pass" placeholder="Senha" required autocomplete="current-password">
+<button type="submit">Entrar</button>
+</form>
+<p id="login-error"></p>
+</div>
+</div>
+
+<!-- Main Content -->
+<div id="main-content" style="display:none">
+<div class="top-bar">
+<a href="/index.html" class="back-link">&#8592; Painel de Estudos</a>
+<button id="logout-btn" onclick="handleLogout()">Sair</button>
+</div>
+<div class="wrap">
+<header>
+<div class="badge">Resumo de Memorização</div>
+<h1>Aula 00 — TI</h1>
+<p class="sub">107 questões analisadas · 5 tópicos</p>
+</header>
+<div class="stats">
+<div class="st"><strong>107</strong>Questões</div>
+<div class="st"><strong>80</strong>CEBRASPE</div>
+<div class="st"><strong>10</strong>FGV</div>
+<div class="st"><strong>5</strong>Tópicos</div>
+</div>
+<div class="pareto-info">
+<strong>Princípio de Pareto:</strong> 4 de 5 tópicos concentram <strong>88%</strong> das questões (94 de 107).
+Esses tópicos receberam tratamento personalizado com analogias, mnemônicos e comparações visuais — marcados com ⭐.
+</div>
+<div class="sec">
+<div class="sec-tag">Tópicos rankeados por cobrança</div>
+<h2>Do mais cobrado ao menos cobrado</h2>
+<div class="tc pareto">
+<div class="tc-hdr"><span class="rk">1</span><span class="tn">Análise de Informações - Teoria da Informação</span><span class="pareto-badge">⭐ Personalizado</span></div>
+<div class="tc-meta"><span class="mt">44q</span><span class="mt ceb">CEBRASPE 38</span><span class="mt ot">FGV 2</span></div>
+<div class="chips"><span class="ch">Conceitos fundamentais</span><span class="ch">Classificação e categorização</span><span class="ch">Aplicações em questões</span><span class="ch">Exceções e casos especiais</span><span class="ch">Jurisprudência e súmulas</span></div>
+<div class="an"><div class="icon">💡</div><p>Pense em <strong>Análise de Informações - Teoria da Informação</strong> como a organização de uma biblioteca: assim como os livros são categorizados para fácil localização, este tema organiza conceitos segundo seus <strong>princípios fundamentais</strong>.</p></div><div class="pair">
+<div class="bx g"><div class="bl">Aspecto 1</div><div class="bt">Primeiro aspecto</div><p>Primeiro lado de Análise de Informações - Teoria da Informação</p></div>
+<div class="bx b"><div class="bl">Aspecto 2</div><div class="bt">Segundo aspecto</div><p>Contraponto ao primeiro aspecto</p></div>
+</div><div class="mn"><div class="ms">CORE</div><div class="me">Conceito, Observação, Regra, Exceção - estrutura para aprender qualquer subtópico</div></div><div class="mn"><div class="ms">PAP</div><div class="me">Princípio, Aplicação, Pegadinha - como resolver questões eficientemente</div></div>
+<button class="cb" onclick="tgl(this)"><span class="ar">▶</span> Resumo completo + Pegadinhas</button>
+<div class="cbd"><div class="rt"><strong>Teoria da Informação</strong> estabelece conceitos fundamentais para compreender o ciclo de processamento e significação de dados em contextos organizacionais e de tecnologia da informação.<br><br><strong>DADOS</strong>: Elementos brutos, representados por símbolos ou valores sem significado intrínseco. São matéria-prima para informação. Exemplos: número &quot;28&quot;, caractere &quot;A&quot;, temperatura &quot;25°C&quot;. Dados isolados não comunicam muito - precisam ser processados, contextualizados e interpretados para tornarem-se úteis. Diferem de informação porque informação é dados processados com significado.<br><br><strong>INFORMAÇÃO</strong>: Resultado do processamento, organização, estruturação e análise de dados com objetivo de gerar significado útil para tomada de decisão. Dados transformados em contexto determinado. Exemplo: &quot;28 colaboradores trabalham nesta filial&quot; é informação (dado 28 + contexto = significado). Informação reduz incerteza e suporta processos decisórios. Deve ser: relevante (pertinente ao problema), oportuna (disponível no tempo certo), precisa (livre de erros), completa (suficiente para decisão).<br><br><strong>CONHECIMENTO</strong>: Interpretação e compreensão da informação em contexto significativo. É aplicação da informação a problemas específicos. Exemplo: compreender que &quot;28 colaboradores é insuficiente para produção desejada&quot; é conhecimento (informação interpretada em contexto). Conhecimento permite prognósticos, tendências, correlações entre informações. Resulta em insights estratégicos.<br><br><strong>SABEDORIA</strong>: Nível superior de conhecimento que incorpora julgamento, experiência e valores. Capacidade de aplicar conhecimento com discernimento em cenários novos. Saber QUANDO e COMO aplicar conhecimento adequadamente. Relacionada a experiência acumulada e compreensão profunda.<br><br><strong>RELACIONAMENTO</strong>: Dados → Informação → Conhecimento → Sabedoria (hierarquia). Cada nível agrega mais interpretação, contexto e valor. Dados são brutos; informação tem significado; conhecimento tem padrões; sabedoria tem discernimento.<br><br><strong>IMPORTÂNCIA PARA TI</strong>: Compreender essa hierarquia é fundamental para desenhar sistemas de informação que capturem dados (qual dado coletar?), processem em informações (qual transformação?), suportem conhecimento (qual análise?), e habilitarem sabedoria (qual decisão estratégica?).<br><br><strong>QUESTÕES TÍPICAS CEBRASPE</strong>: Afirmações do tipo &quot;(I) Dados são matéria-prima para informação. (II) Conhecimento é interpretação de informação em contexto significativo. (III) Sabedoria é aplicação de conhecimento com experiência.&quot; Todas verdadeiras. Banca explora compreensão profunda da distinção entre esses níveis.</div><div class="pl">Pegadinhas da banca</div><div class="pg">Confundir dados com informação: 'José, 32, técnico' são dados. 'José é técnico com 10 anos de experiência, logo é expert' é informação.</div><div class="pg">Conhecimento ≠ informação: conhecimento exige interpretação em contexto e padrões. Informação é dados contextualizados.</div><div class="pg">Sabedoria ≠ conhecimento: sabedoria incorpora julgamento e experiência em aplicação apropriada.</div><div class="pg">Pensar que informação dispensa contexto: mesmo valor numérico muda significado com contexto ('28 grama' vs '28 quilogramas').</div><div class="pg">Assumir que mais dados = melhor informação: sem processamento e estruturação apropriados, dados em volume pode confundir.</div></div>
+</div><div class="tc pareto">
+<div class="tc-hdr"><span class="rk">2</span><span class="tn">Análise de Informações - Ciclo de Vida de Dados</span><span class="pareto-badge">⭐ Personalizado</span></div>
+<div class="tc-meta"><span class="mt">22q</span><span class="mt ceb">CEBRASPE 10</span></div>
+<div class="chips"><span class="ch">Conceitos fundamentais</span><span class="ch">Classificação e categorização</span><span class="ch">Aplicações em questões</span><span class="ch">Exceções e casos especiais</span><span class="ch">Jurisprudência e súmulas</span></div>
+<div class="an"><div class="icon">💡</div><p>Pense em <strong>Análise de Informações - Ciclo de Vida de Dados</strong> como a organização de uma biblioteca: assim como os livros são categorizados para fácil localização, este tema organiza conceitos segundo seus <strong>princípios fundamentais</strong>.</p></div><div class="pair">
+<div class="bx g"><div class="bl">Aspecto 1</div><div class="bt">Primeiro aspecto</div><p>Primeiro lado de Análise de Informações - Ciclo de Vida de Dados</p></div>
+<div class="bx b"><div class="bl">Aspecto 2</div><div class="bt">Segundo aspecto</div><p>Contraponto ao primeiro aspecto</p></div>
+</div><div class="mn"><div class="ms">CORE</div><div class="me">Conceito, Observação, Regra, Exceção - estrutura para aprender qualquer subtópico</div></div><div class="mn"><div class="ms">PAP</div><div class="me">Princípio, Aplicação, Pegadinha - como resolver questões eficientemente</div></div>
+<button class="cb" onclick="tgl(this)"><span class="ar">▶</span> Resumo completo + Pegadinhas</button>
+<div class="cbd"><div class="rt"><strong>Ciclo de Vida de Dados</strong> descreve os estágios pelos quais dados passam desde sua criação até descarte ou arquivamento permanente em contextos organizacionais.<br><br><strong>COLETA/CAPTURA</strong>: Primeira fase - obtenção de dados brutos de diversas fontes (sistemas transacionais, sensores, formulários, APIs externas). Dados são capturados em sua forma mais bruta, ainda sem processamento. Qualidade desde essa fase é crítica - &quot;lixo entra, lixo sai&quot; (GIGO - Garbage In, Garbage Out).<br><br><strong>ARMAZENAMENTO</strong>: Dados capturados são armazenados em bancos de dados, data warehouses, data lakes ou sistemas de arquivo. Armazenamento deve ser seguro, escalável e acessível. Diferentes formatos (estruturado, semiestruturado, não-estruturado) requerem diferentes estratégias de armazenamento.<br><br><strong>PROCESSAMENTO E TRANSFORMAÇÃO</strong>: Dados brutos são limpos, validados, transformados e estruturados para uso útil. Inclui <strong>ETL</strong> (Extract, Transform, Load): extrair dados de fontes diversas, transformar conforme regras de negócio, carregar em destino (data warehouse). Também inclui operações como deduplicação, normalização, agregação, enriquecimento.<br><br><strong>ANÁLISE E INTERPRETAÇÃO</strong>: Dados processados são analisados para gerar insights. Inclui análise exploratória (entender dados), análise descritiva (o que ocorreu), análise preditiva (o que ocorrerá), análise prescritiva (o que fazer). Ferramentas de BI (Business Intelligence), data mining, machine learning aplicadas aqui.<br><br><strong>DISSEMINAÇÃO/PUBLICAÇÃO</strong>: Resultados da análise são compartilhados com usuários finais através de relatórios, dashboards, APIs, publicações. Dados devem ser apresentados de forma compreensível e acionável.<br><br><strong>ARQUIVAMENTO/RETENÇÃO</strong>: Dados históricos são retidos conforme políticas de negócio e regulamentações. Alguns dados são descartados (por lei, por falta de relevância), outros arquivados para auditoria e conformidade.<br><br><strong>DESCARTE/DESTRUIÇÃO</strong>: Dados chegam ao fim de vida útil e são destruídos de forma segura (destruição física de mídia, deleção permanente de registros lógicos) para proteger privacidade e segurança.<br><br><strong>ETL PROFUNDO</strong>: Extract (obtém dados de fonte - banco de dados, arquivos, APIs), Transform (aplica regras de negócio - validação, limpeza, cálculos, agregações, conversões de formato), Load (insere dados transformados em destino - data warehouse, data mart). Questões CEBRASPE/FCC exploram fases do ETL: &quot;qual fase define como dados são carregados em data warehouse?&quot; (Load). &quot;Qual fase realiza modificações nos dados?&quot; (Transform).</div><div class="pl">Pegadinhas da banca</div><div class="pg">Confundir ETL com ciclo completo: ETL é apenas uma parte (processamento) do ciclo de vida. Não inclui coleta inicial nem análise final.</div><div class="pg">Pensar que Load é onde dados entram primeiro: dados entram na Coleta, Load é saída do ETL.</div><div class="pg">Esquecer que Transform é onde qualidade é assegurada: limpeza, deduplicação, validação ocorrem nessa fase.</div><div class="pg">Confundir Data Warehouse com Data Lake: warehouse é estruturado e processado; lake é repositório de dados brutos em volume.</div><div class="pg">Assumir que dados são 'prontos' após ETL: análise adicional e enriquecimento podem ser necessários.</div></div>
+</div><div class="tc pareto">
+<div class="tc-hdr"><span class="rk">3</span><span class="tn">Análise de Informações - Metadados</span><span class="pareto-badge">⭐ Personalizado</span></div>
+<div class="tc-meta"><span class="mt">14q</span><span class="mt ceb">CEBRASPE 12</span><span class="mt ot">FGV 1</span></div>
+<div class="chips"><span class="ch">Conceitos fundamentais</span><span class="ch">Classificação e categorização</span><span class="ch">Aplicações em questões</span><span class="ch">Exceções e casos especiais</span><span class="ch">Jurisprudência e súmulas</span></div>
+<div class="an"><div class="icon">💡</div><p>Pense em <strong>Análise de Informações - Metadados</strong> como a organização de uma biblioteca: assim como os livros são categorizados para fácil localização, este tema organiza conceitos segundo seus <strong>princípios fundamentais</strong>.</p></div><div class="pair">
+<div class="bx g"><div class="bl">Aspecto 1</div><div class="bt">Primeiro aspecto</div><p>Primeiro lado de Análise de Informações - Metadados</p></div>
+<div class="bx b"><div class="bl">Aspecto 2</div><div class="bt">Segundo aspecto</div><p>Contraponto ao primeiro aspecto</p></div>
+</div><div class="mn"><div class="ms">CORE</div><div class="me">Conceito, Observação, Regra, Exceção - estrutura para aprender qualquer subtópico</div></div><div class="mn"><div class="ms">PAP</div><div class="me">Princípio, Aplicação, Pegadinha - como resolver questões eficientemente</div></div>
+<button class="cb" onclick="tgl(this)"><span class="ar">▶</span> Resumo completo + Pegadinhas</button>
+<div class="cbd"><div class="rt"><strong>Metadados</strong> são 'dados sobre dados' - informações que descrevem características, propriedades, contexto e significado de outros dados. Sem metadados, dados brutos perdem significado.<br><br><strong>METADADOS DESCRITIVOS</strong>: Informações que identificam e descrevem dados: título, autor, assunto, palavras-chave, descrição, data de criação, data de modificação, versão, idioma. Exemplo: documento com metadados &quot;Relatório de Vendas Q2 2025, autor João Silva, criado 01/04/2025, atualizado 10/04/2025&quot;. Facilitam descoberta e compreensão.<br><br><strong>METADADOS ESTRUTURAIS</strong>: Informações sobre organização e estrutura dos dados: como dados estão compostos (relacionamentos entre partes), formato de arquivo, esquema de banco de dados, definições de campos (tipo de dado, comprimento, restrições), índices. Exemplo: &quot;Tabela Clientes possui campos ID (inteiro), Nome (texto 100 caracteres), Email (texto), Data_Cadastro (data)&quot;. Críticos para processamento correto.<br><br><strong>METADADOS ADMINISTRATIVOS</strong>: Informações sobre gestão e controle de dados: direitos de acesso/permissões, políticas de retenção, proprietário, classificação de sensibilidade, conformidade regulatória, licenças de uso, histórico de auditoria. Exemplo: &quot;Arquivo contém dados pessoais, acesso restrito a RH, retenção por 5 anos conforme LGPD, proprietário Departamento de Recursos Humanos&quot;.<br><br><strong>APLICAÇÕES PRÁTICAS</strong>: (1) Pesquisa e Descoberta: metadados descritivos permitem buscar dados relevantes em repositórios grandes. (2) Integração de Dados: metadados estruturais definem como integrar dados de diferentes fontes. (3) Governança: metadados administrativos garantem conformidade, segurança, privacidade. (4) Qualidade de Dados: metadados ajudam validar integridade, completude, acurácia. (5) Documentação: metadados servem como documentação executável dos dados.<br><br><strong>FERRAMENTAS E TECNOLOGIAS</strong>: Sistemas de gestão de metadados (metadata repositories), data catalogs (ferramentas de descoberta de dados), data lineage tools (rastreiam origem e transformações de dados). XML, JSON usados frequentemente para representar metadados estruturados.<br><br><strong>EXEMPLOS EM DOCUMENTOS</strong>: Documentos Word/PDF contêm metadados como autor, data de criação, título, assunto, palavras-chave. Imagens JPEG contêm EXIF metadados: câmera, data da foto, localização GPS, iso, velocidade de obturador. Arquivos em geral contêm timestamps de criação/modificação, tamanho, permissões.</div><div class="pl">Pegadinhas da banca</div><div class="pg">Confundir metadados com dados: metadados descrevem dados (ex: 'altura é campo numérico de 3 dígitos'), dados são conteúdo ('175 cm').</div><div class="pg">Pensar que metadados descritivos bastam: sem metadados estruturais, dados não são processáveis por sistemas.</div><div class="pg">Metadados não garante qualidade: metadados administrativos indicam políticas, mas não forçam conformidade.</div><div class="pg">Esquecer que metadados também exigem manutenção: metadados desatualizados podem ser piores que ausência.</div><div class="pg">Confundir metadata com backup: metadados sobre retenção não substituem necessidade de cópias/backups.</div></div>
+</div><div class="tc pareto">
+<div class="tc-hdr"><span class="rk">4</span><span class="tn">Análise de Informações - Dados Estruturados e Não-Estruturados</span><span class="pareto-badge">⭐ Personalizado</span></div>
+<div class="tc-meta"><span class="mt">14q</span><span class="mt ceb">CEBRASPE 9</span><span class="mt ot">FGV 5</span></div>
+<div class="chips"><span class="ch">Conceitos fundamentais</span><span class="ch">Classificação e categorização</span><span class="ch">Aplicações em questões</span><span class="ch">Exceções e casos especiais</span><span class="ch">Jurisprudência e súmulas</span></div>
+<div class="an"><div class="icon">💡</div><p>Pense em <strong>Análise de Informações - Dados Estruturados e Não-Estruturados</strong> como a organização de uma biblioteca: assim como os livros são categorizados para fácil localização, este tema organiza conceitos segundo seus <strong>princípios fundamentais</strong>.</p></div><div class="pair">
+<div class="bx g"><div class="bl">Aspecto 1</div><div class="bt">Primeiro aspecto</div><p>Primeiro lado de Análise de Informações - Dados Estruturados e Não-Estruturados</p></div>
+<div class="bx b"><div class="bl">Aspecto 2</div><div class="bt">Segundo aspecto</div><p>Contraponto ao primeiro aspecto</p></div>
+</div><div class="mn"><div class="ms">CORE</div><div class="me">Conceito, Observação, Regra, Exceção - estrutura para aprender qualquer subtópico</div></div><div class="mn"><div class="ms">PAP</div><div class="me">Princípio, Aplicação, Pegadinha - como resolver questões eficientemente</div></div>
+<button class="cb" onclick="tgl(this)"><span class="ar">▶</span> Resumo completo + Pegadinhas</button>
+<div class="cbd"><div class="rt"><strong>Dados Estruturados, Semiestruturados e Não-Estruturados</strong> classificam dados conforme sua organização e a facilidade de processamento automatizado.<br><br><strong>DADOS ESTRUTURADOS</strong>: Organizados em formato rígido, geralmente em tabelas com colunas bem-definidas, tipos de dados específicos, restrições de integridade. Armazenados em Bancos de Dados Relacionais (SGBDR). Exemplos: tabelas SQL (ID, Nome, Email, Data_Nascimento), planilhas Excel, registros de transações bancárias. Características: esquema bem-definido A PRIORI (antes dos dados), possibilidade de consultas SQL precisas, garantias de integridade (constraints, chaves primárias), alto desempenho em buscas e análises estruturadas. Armaze namento eficiente porque estrutura permite compressão. Acessibilidade: fácil busca, filtro, ordenação.<br><br><strong>DADOS SEMIESTRUTURADOS</strong>: Possuem algum nível de estrutura/marcação sem ser tão rígido quanto estruturados. Marcações (tags, identificadores) fornecem estrutura parcial. Exemplos: XML, JSON, arquivos YAML, e-mails (combinam campo estruturado como &quot;De:&quot;, &quot;Para:&quot; com corpo de texto livre). Características: esquema EVOLUCIONÁRIO (pode variar entre registros), estrutura implícita/explícita via marcadores, permite flexibilidade (diferentes campos em diferentes registros), pode ser processado com parsing mas não com SQL simples. Exemplo JSON: `{&quot;nome&quot;: &quot;João&quot;, &quot;idade&quot;: 30, &quot;endereço&quot;: {&quot;rua&quot;: &quot;Av. X&quot;, &quot;número&quot;: 100}}` - tem estrutura clara mas cada registro pode ter diferentes campos.<br><br><strong>DADOS NÃO-ESTRUTURADOS</strong>: Sem formato rígido ou marcação previsível. Exemplos: documentos de texto livre, imagens, vídeos, áudio, logs, e-mails com texto livre, posts em redes sociais, documentos PDF contendo apenas imagens, apresentações. Características: impossível processar com consultas SQL diretas, exigem técnicas especiais (NLP para textos, computer vision para imagens, machine learning para padrões), maior volume potencial, mais difícil indexar/buscar, armazenamento menos eficiente. Valor alto mas exige processamento mais inteligente.<br><br><strong>COMBINAÇÕES EM PRÁTICA</strong>: (1) Banco de dados relacional = estruturado. (2) API REST retornando JSON = semiestruturado. (3) Data lake contendo estruturados, semiestruturados e não-estruturados = heterogêneo. (4) Documento Word = pode conter texto (não-estruturado) + tabelas (estruturadas).<br><br><strong>QUESTÃO CEBRASPE RECORRENTE</strong>: &quot;Arquivos .xml, .csv, .json são exemplos de dados estruturados.&quot; ERRADO. São <strong>semiestruturados</strong> (.xml, .json têm marcações; .csv é estruturado mas minimalista sem esquema explícito). Erro comum é classificar qualquer coisa em arquivo como &quot;estruturada&quot;. Estruturado exige banco de dados relacional com schema definido.<br><br><strong>PROCESSAMENTO</strong>: Estruturados: SQL, análise OLAP. Semiestruturados: parsing XML/JSON, ferramentas NoSQL. Não-estruturados: machine learning, NLP, análise manual.</div><div class="pl">Pegadinhas da banca</div><div class="pg">.xml e .json são semiestruturados, não estruturados (têm marcações, não esquema rígido de banco).</div><div class="pg">.csv pode ser considerado estruturado se em contexto de banco de dados, mas é minimalista.</div><div class="pg">Pensar que semiestruturado significa 'fácil de processar': requer parsing especializado, ainda não é SQL simples.</div><div class="pg">Confundir 'não-estruturado' com 'inútil': não-estruturado tem valor alto mas exige processamento inteligente (ML, NLP).</div><div class="pg">Data Lake contém tudo: estruturados, semiestruturados, não-estruturados em volume (Big Data). Data Warehouse é estruturado apenas.</div></div>
+</div><div class="tc">
+<div class="tc-hdr"><span class="rk">5</span><span class="tn">Análise de Informações - Dados Abertos</span></div>
+<div class="tc-meta"><span class="mt">13q</span><span class="mt ceb">CEBRASPE 11</span><span class="mt ot">FGV 2</span></div>
+<div class="chips"><span class="ch">Conceitos fundamentais</span><span class="ch">Classificação e categorização</span><span class="ch">Aplicações em questões</span><span class="ch">Exceções e casos especiais</span><span class="ch">Jurisprudência e súmulas</span></div>
+<button class="cb" onclick="tgl(this)"><span class="ar">▶</span> Ver resumo e pegadinhas</button>
+<div class="cbd"><div class="rt"><strong>Dados Abertos</strong> (Open Data) são dados que podem ser livremente usados, reutilizados e redistribuídos por qualquer pessoa, sem restrições legais, técnicas ou sociais, exceto exigências de atribuição de autoria e compartilhamento sob mesmos termos.<br><br><strong>CARACTERÍSTICAS DEFINIDORAS</strong>: (1) <strong>Disponibilidade e Acesso</strong>: dados devem ser integralmente disponibilizados, em formato acessível, com custo não maior que reprodução razoável (idealmente gratuitos). Não devem exigir registro, assinatura de EULA ou acesso restrito. (2) <strong>Reutilização e Redistribuição</strong>: dados podem ser reutilizados para qualquer propósito, sem restrição de uso ou área de aplicação. Devem poder ser redistribuídos para outros. (3) <strong>Participação Universal</strong>: sem restrições a pessoas, grupos, ou áreas de atuação. Cientista, empresário, cidadão comum todos podem usar igualmente. (4) <strong>Formato Aberto e Não-Proprietário</strong>: dados em formato cujo controle não seja exclusivo de nenhuma entidade. CSV, JSON, XML são abertos; Excel proprietário. (5) <strong>Primariedade</strong>: dados devem ser publicados conforme coletados na fonte, com máxima granularidade, não agregados ou transformados. Permite reanálise com perspectiva diferente.<br><br><strong>PRINCÍPIOS DE DADOS ABERTOS</strong> (conforme Open Knowledge Foundation e recomendações internacionais): (1) Completos: publicação integral sem censura. (2) Primários: publicados conforme coletados. (3) Oportunos: disponibilizados rapidamente para preservar valor (dados sobre eleição são inúteis 1 ano depois). (4) Acessíveis: fáceis de encontrar e obter. (5) Processáveis: formato que permite processamento automatizado. (6) Não-discriminatórios: acessíveis a qualquer pessoa sem autenticação. (7) Não-proprietários: em formato aberto. (8) Livres de licenças: sob licenças que permitem livre uso (Creative Commons Zero, Open Data Commons).<br><br><strong>APLICAÇÕES PRÁTICAS</strong>: Dados abertos governamentais (orçamentos públicos, resultados eleitorais, estatísticas de saúde), dados científicos (publicações, datasets de pesquisa), dados corporativos voluntários (empresas que publicam dados para inovação), dados de cidades inteligentes (trânsito em tempo real, clima, qualidade do ar). Transparência, inovação, prestação de contas.<br><br><strong>DIFERENÇAS - DADOS ABERTOS VS PRIVADOS VS SENSIVEIS</strong>: Dados abertos: sem restrição. Dados privados: acesso restrito (ex: nível de acesso em empresa). Dados sensíveis: pessoais, médicos, financeiros - sujeitos a legislação de privacidade (LGPD, GDPR) mesmo que &quot;abertos&quot; por lei - são abertos mas com proteções.<br><br><strong>QUESTÃO CEBRASPE RECORRENTE</strong>: Princípio de <strong>primariedade</strong> exige dados publicados &quot;conforme coletados, com máxima granularidade, não agregados&quot;. Banca explora: &quot;dados abertos devem ser agregados para facilitar entendimento?&quot; FALSO - devem ser primários (granulares). Agregação é trabalho do usuário/analista.</div><div class="pl">Pegadinhas da banca</div><div class="pg">Confundir 'dados abertos' com 'dados públicos': dados públicos podem ter restrições (acesso por login). Dados abertos são verdadeiramente sem restrição de reuso.</div><div class="pg">Pensar que 'aberto' significa 'baixa qualidade': dados abertos devem ter qualidade igual à de dados privativos. Falta de qualidade é falha de governança.</div><div class="pg">Primariedade confundida com 'não processados': primariedade significa granularidade máxima, não que dados devem estar 'sujos'. Limpeza é diferente de agregação/transformação.</div><div class="pg">Licenças: CC-BY é 'aberta' (permite reuso com atribuição). CC-BY-NC (não-comercial) é restritiva, não é verdadeiramente 'aberta'.</div><div class="pg">Velocidade: dados sobre eleição publicados 1 ano depois têm pouco valor prático apesar de serem 'abertos' tecnicamente.</div></div>
+</div>
+</div>
+<footer>TI · Aula 00 · Gerado a partir de 107 questões</footer>
+</div>
+</div><!-- /main-content -->
+
+<script>
+// ===== Resumo interactions =====
+function tgl(b){b.classList.toggle('open');b.nextElementSibling.classList.toggle('show')}
+
+// ===== Supabase Auth =====
+let sb=null, currentUser=null;
+
+function initSB(){
+  if(typeof SUPABASE_URL==='undefined'||SUPABASE_URL.includes('SEU-PROJETO'))return false;
+  sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);return true;
+}
+
+async function checkAuth(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(session){currentUser=session.user;showContent();}
+  else{document.getElementById('auth-gate').style.display='flex';}
+}
+
+function showContent(){
+  document.getElementById('auth-gate').style.display='none';
+  document.getElementById('main-content').style.display='block';
+}
+
+async function handleLogout(){if(sb)await sb.auth.signOut();location.href='/index.html';}
+
+document.getElementById('login-form').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const em=document.getElementById('login-email').value;
+  const pw=document.getElementById('login-pass').value;
+  const er=document.getElementById('login-error');er.textContent='';
+  const{data,error}=await sb.auth.signInWithPassword({email:em,password:pw});
+  if(error){er.textContent='Email ou senha incorretos.';return;}
+  currentUser=data.user;showContent();
+});
+
+// ===== Init =====
+document.addEventListener('DOMContentLoaded',()=>{
+  if(initSB()){checkAuth();}
+  else{showContent();}
+});
+</script>
+</body>
+</html>

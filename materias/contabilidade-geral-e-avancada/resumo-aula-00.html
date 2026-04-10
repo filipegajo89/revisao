@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resumo — Aula 00 · Contabilidade Geral e Avançada</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/assets/config.js"></script>
+<style>
+:root{--bg:#0c0e13;--bg2:#13161e;--bg3:#1a1e2a;--accent:#f59e0b;--accent-soft:rgba(245,158,11,.1);--green:#34d399;--green-soft:rgba(52,211,153,.08);--blue:#60a5fa;--blue-soft:rgba(96,165,250,.08);--red:#f87171;--red-soft:rgba(248,113,113,.07);--purple:#a78bfa;--purple-soft:rgba(167,139,250,.08);--text:#e4e6ec;--dim:#8a8fa4;--faint:#4e5268;--border:#252937;--r:14px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.8;padding:2.5rem 1.2rem}
+.wrap{max-width:720px;margin:0 auto}
+header{text-align:center;margin-bottom:2.5rem}
+.badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:3px;color:var(--accent);background:var(--accent-soft);padding:5px 16px;border-radius:20px;margin-bottom:1rem}
+header h1{font-family:'DM Serif Display',serif;font-size:2rem;font-weight:400;line-height:1.3;margin-bottom:.4rem}
+header .sub{color:var(--dim);font-size:.9rem}
+.stats{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:2rem}
+.st{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 16px;font-size:.8rem;text-align:center}
+.st strong{color:var(--accent);font-size:1.2rem;display:block}
+.sec{margin-bottom:2.5rem}
+.sec-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:3px;color:var(--faint);margin-bottom:.6rem}
+.sec h2{font-family:'DM Serif Display',serif;font-size:1.3rem;font-weight:400;margin-bottom:1rem}
+hr.div{border:none;height:1px;background:var(--border);margin:2rem 0}
+
+/* TOPIC CARD */
+.tc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;margin-bottom:1.5rem;transition:border-color .2s}
+.tc.pareto{border-color:rgba(245,158,11,.25)}
+.tc-hdr{display:flex;align-items:center;margin-bottom:.8rem;flex-wrap:wrap;gap:8px}
+.rk{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#000;font-weight:700;font-size:.8rem;flex-shrink:0}
+.tn{font-weight:700;font-size:1.05rem;flex:1}
+.pareto-badge{display:inline-flex;align-items:center;gap:4px;font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent);background:var(--accent-soft);padding:4px 12px;border-radius:20px;flex-shrink:0}
+.tc-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+.mt{font-size:.68rem;padding:3px 10px;border-radius:20px;background:var(--bg3);color:var(--dim);font-family:'JetBrains Mono',monospace}
+.mt.ceb{border:1px solid rgba(96,165,250,.3);color:var(--blue)}
+.mt.ot{border:1px solid rgba(245,158,11,.3);color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
+.ch{font-size:.73rem;padding:4px 12px;border-radius:20px;background:var(--bg3);color:var(--dim);border:1px solid var(--border)}
+
+/* ANALOGIA */
+.an{background:var(--bg2);border-radius:var(--r);padding:1.3rem;margin-bottom:1rem;border:1px solid var(--border)}
+.an .icon{font-size:1.6rem;margin-bottom:.4rem}
+.an p{font-size:.9rem;color:var(--dim);line-height:1.75}
+.an p strong{color:var(--text);font-weight:600}
+
+/* MNEMONIC */
+.mn{background:var(--bg3);border:1px dashed var(--accent);border-radius:var(--r);padding:1rem 1.3rem;margin-bottom:1rem;text-align:center}
+.mn .ms{font-family:'JetBrains Mono',monospace;font-size:.95rem;color:var(--accent);font-weight:600;letter-spacing:1px}
+.mn .me{font-size:.8rem;color:var(--dim);margin-top:.3rem}
+
+/* PAIR */
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1rem}
+.bx{padding:1.1rem;border-radius:var(--r);border:1px solid var(--border)}
+.bx.g{background:var(--green-soft);border-color:rgba(52,211,153,.15)}
+.bx.b{background:var(--blue-soft);border-color:rgba(96,165,250,.15)}
+.bx .bl{font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:2px;margin-bottom:.4rem}
+.bx.g .bl{color:var(--green)}
+.bx.b .bl{color:var(--blue)}
+.bx .bt{font-weight:700;font-size:.95rem;margin-bottom:.3rem}
+.bx p{font-size:.85rem;color:var(--dim);line-height:1.7}
+.bx p strong{color:var(--text);font-weight:600}
+
+/* RESUMO & PEGADINHAS */
+.rt{font-size:.9rem;line-height:1.8;color:var(--dim);margin-bottom:1rem}
+.rt strong{color:var(--text);font-weight:600}
+.pg{background:var(--red-soft);border-left:3px solid var(--red);padding:.8rem 1rem;margin-bottom:.6rem;border-radius:0 8px 8px 0;font-size:.85rem;color:var(--dim);line-height:1.7}
+.pg::before{content:"⚠ ";color:var(--red);font-weight:700}
+.pl{font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--red);margin-bottom:.5rem;margin-top:1rem}
+
+/* COLLAPSE */
+.cb{width:100%;text-align:left;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.88rem;display:flex;align-items:center;gap:8px;transition:border-color .2s;margin-top:.5rem}
+.cb:hover{border-color:var(--accent)}
+.cb .ar{transition:transform .2s;color:var(--accent);font-size:.75rem}
+.cb.open .ar{transform:rotate(90deg)}
+.cbd{display:none;padding:1rem 0 0;animation:fi .25s ease}
+.cbd.show{display:block}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+
+/* PARETO INFO */
+.pareto-info{background:var(--accent-soft);border:1px solid rgba(245,158,11,.15);border-radius:var(--r);padding:1.2rem 1.5rem;margin-bottom:2rem;font-size:.88rem;color:var(--dim);line-height:1.7}
+.pareto-info strong{color:var(--accent)}
+
+footer{text-align:center;margin-top:2rem;color:var(--faint);font-size:.72rem;font-family:'JetBrains Mono',monospace}
+
+/* Auth gate */
+#auth-gate{display:none;position:fixed;inset:0;z-index:9999;background:var(--bg);justify-content:center;align-items:center;flex-direction:column}
+.login-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:40px 36px;max-width:380px;width:90%;text-align:center}
+.login-box h1{font-size:1.4rem;margin-bottom:6px}
+.login-box .subtitle{color:var(--dim);font-size:.85rem;margin-bottom:28px}
+.login-box input{display:block;width:100%;padding:10px 14px;margin-bottom:12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.95rem;font-family:inherit}
+.login-box input:focus{outline:none;border-color:var(--accent)}
+.login-box button[type=submit]{width:100%;padding:10px;background:#238636;color:#fff;border:none;border-radius:6px;font-size:.95rem;font-weight:600;cursor:pointer;margin-top:4px}
+.login-box button[type=submit]:hover{background:#2ea043}
+#login-error{color:#f87171;font-size:.85rem;margin-top:10px;min-height:1.2em}
+
+.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+#logout-btn{background:var(--bg2);border:1px solid var(--border);color:var(--dim);padding:6px 14px;border-radius:6px;font-size:.75rem;cursor:pointer;font-family:inherit}
+#logout-btn:hover{border-color:var(--red);color:var(--red)}
+
+@media(max-width:580px){
+  header h1{font-size:1.5rem}
+  body{padding:1.5rem .8rem}
+  .pair{grid-template-columns:1fr}
+  .tc-hdr{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<!-- Auth Gate -->
+<div id="auth-gate">
+<div class="login-box">
+<h1>Resumo de Memorização</h1>
+<p class="subtitle">Faça login para acessar o material</p>
+<form id="login-form">
+<input type="email" id="login-email" placeholder="Email" required autocomplete="email">
+<input type="password" id="login-pass" placeholder="Senha" required autocomplete="current-password">
+<button type="submit">Entrar</button>
+</form>
+<p id="login-error"></p>
+</div>
+</div>
+
+<!-- Main Content -->
+<div id="main-content" style="display:none">
+<div class="top-bar">
+<a href="/index.html" class="back-link">&#8592; Painel de Estudos</a>
+<button id="logout-btn" onclick="handleLogout()">Sair</button>
+</div>
+<div class="wrap">
+<header>
+<div class="badge">Resumo de Memorização</div>
+<h1>Aula 00 — Contabilidade Geral e Avançada</h1>
+<p class="sub">71 questões analisadas · 1 tópicos</p>
+</header>
+<div class="stats">
+<div class="st"><strong>71</strong>Questões</div>
+<div class="st"><strong>53</strong>CEBRASPE</div>
+<div class="st"><strong>6</strong>FGV</div>
+<div class="st"><strong>1</strong>Tópicos</div>
+</div>
+<div class="pareto-info">
+<strong>Princípio de Pareto:</strong> 1 de 1 tópicos concentram <strong>100%</strong> das questões (71 de 71).
+Esses tópicos receberam tratamento personalizado com analogias, mnemônicos e comparações visuais — marcados com ⭐.
+</div>
+<div class="sec">
+<div class="sec-tag">Tópicos rankeados por cobrança</div>
+<h2>Do mais cobrado ao menos cobrado</h2>
+<div class="tc pareto">
+<div class="tc-hdr"><span class="rk">1</span><span class="tn">Aspectos Introdutórios</span><span class="pareto-badge">⭐ Personalizado</span></div>
+<div class="tc-meta"><span class="mt">71q</span><span class="mt ceb">CEBRASPE 53</span><span class="mt ot">FGV 6</span></div>
+<div class="chips"><span class="ch">Conceitos fundamentais</span><span class="ch">Classificação e categorização</span><span class="ch">Aplicações em questões</span><span class="ch">Exceções e casos especiais</span><span class="ch">Jurisprudência e súmulas</span></div>
+<div class="an"><div class="icon">💡</div><p>Pense em <strong>Contabilidade</strong> como um <strong>diário/jornal de uma casa</strong>: você registra todas as transações (ganhos de salário, gastos com aluguel, compra de móvel) para saber se está usando bem seu dinheiro para atingir objetivos (poupar para casa própria, educação filhos, etc.). Contabilidade faz o mesmo pela empresa - mostra se patrimônio está crescendo conforme planejado.</p></div><div class="pair">
+<div class="bx g"><div class="bl">CONTABILIDADE</div><div class="bt">Ciência Social Interpretativa</div><p>Estuda fenômenos patrimoniais, interpreta, analisa, orienta decisão econômica baseada em princípios conceituais e julgamento profissional</p></div>
+<div class="bx b"><div class="bl">ESCRITURAÇÃO</div><div class="bt">Atividade Técnica de Registro</div><p>Registra transações operacionais em livros ou sistemas. É ferramenta da contabilidade, não a contabilidade em si</p></div>
+</div><div class="pair">
+<div class="bx g"><div class="bl">RESULTADO (Lucro/Prejuízo)</div><div class="bt">Princípio da Competência</div><p>Reconhecido quando incorrido (direito/obrigação). Receitas menos despesas incorridas = resultado econômico do período</p></div>
+<div class="bx b"><div class="bl">FLUXO DE CAIXA</div><div class="bt">Entradas e Saídas Reais</div><p>Registra efetivo recebimento/pagamento de dinheiro. Diferencia resultado do movimento real de caixa</p></div>
+</div><div class="mn"><div class="ms">CEOCO</div><div class="me">Conceito, Entidade, Objetivo, Objeto, Campo - estrutura dos Aspectos Introdutórios</div></div><div class="mn"><div class="ms">CFUP</div><div class="me">Competência, Fidedignidade, Utilidade, Prudência - princípios fundamentais da contabilidade</div></div>
+<button class="cb" onclick="tgl(this)"><span class="ar">▶</span> Resumo completo + Pegadinhas</button>
+<div class="cbd"><div class="rt">A disciplina de <strong>Aspectos Introdutórios</strong> da Contabilidade estabelece os fundamentos conceituais, objetivos, funções e princípios que norteiam a ciência contábil e sua aplicação nas entidades. Compreensão sólida desses aspectos é essencial para dominar todo o restante da contabilidade.<br><br><strong>CONCEITO DE CONTABILIDADE</strong>: Contabilidade é a <strong>Ciência Social</strong> (não exata, pois envolve interpretação e julgamento profissional) que estuda os fenômenos patrimoniais e aziendais (relacionados à gestão de bens e patrimônio de entidades) sob aspecto econômico-financeiro. Segundo o Dicionário de Contabilidade do Dr. Antônio Lopes de Sá, é &quot;a ciência que estuda o sistema da riqueza administrativa a fim de observar se ela atinge os fins propostos pelo sujeito aziendal&quot;. Definição mais técnica: é ciência que registra, classifica, demonstra, analisa e interpreta os fenômenos que afetam o patrimônio das entidades.<br><br><strong>OBJETIVO DA CONTABILIDADE</strong>: Fornecer informações que permitam a <strong>verificação se a riqueza administrativa está sendo utilizada eficazmente para alcançar os fins propostos pela entidade</strong>. Objetivo não é apenas registrar transações (isso é escrituração, atividade), mas orientar decisões econômicas através de informação útil. Objetivos complementares: (1) Controle do patrimônio (saber o que se tem, onde está, em que condições). (2) Evidenciação da situação patrimonial e financeira. (3) Prestação de contas aos diversos stakeholders (sócios, governo, credores, colaboradores). (4) Apoio à gestão e tomada de decisão estratégica.<br><br><strong>OBJETO DA CONTABILIDADE</strong>: O <strong>Patrimônio</strong> das entidades - conjunto de bens, direitos e obrigações de uma pessoa (física ou jurídica). Patrimônio está em constante modificação por transações econômicas. Contabilidade estuda essas modificações. Exemplos: pessoa compra imóvel (aumenta bem), toma empréstimo (aumenta obrigação), paga dívida (diminui obrigação), ganha receita (aumenta direito e resultado).<br><br><strong>CAMPO DE APLICAÇÃO DA CONTABILIDADE</strong>: Não se limita a empresas comerciais. Qualquer entidade com patrimônio pode ser contabilizada: (1) Entidades lucrativas (empresas, sociedades comerciais, indústrias). (2) Entidades sem fins lucrativos (ONGs, associações, fundações, órgãos públicos). (3) Pessoa física (em contextos específicos, como profissional autônomo, agricultor). Contabilidade também é aplicada em contextos não-tradicionais: órgãos governamentais (contabilidade pública), entidades internacionais, fundos de investimento, etc.<br><br><strong>USUÁRIOS DA INFORMAÇÃO CONTÁBIL</strong>: (1) <strong>Usuários Internos</strong> - Administradores, gerentes, diretores que usam informação para gestão operacional e estratégica. (2) <strong>Usuários Externos</strong> - Sócios/acionistas (avaliar retorno), credores (avaliar solvência), governo (arrecadação de impostos, regulação), colaboradores (segurança de emprego), clientes/fornecedores (confiabilidade). Contabilidade deve atender informações úteis para essa diversidade.<br><br><strong>RAMOS DA CONTABILIDADE</strong>: (1) <strong>Contabilidade Financeira (ou Geral)</strong> - Registra, classifica e demonstra transações de forma a produzir demonstrações para usuários externos. Segue normas de contabilidade (IFRS, BR GAAP). (2) <strong>Contabilidade Gerencial</strong> - Produz informações para gerentes e decisores internos. Menos regulamentada, mais flexível, voltada a decisão operacional. (3) <strong>Contabilidade de Custos</strong> - Analisa, registra e interpreta custos de produção. Fundamental para precificação, controle de desperdício, avaliação de performance. (4) <strong>Contabilidade Pública</strong> - Aplica-se a órgãos governo, com regras específicas de receita (arrecadação) e despesa (gasto orçamentário). (5) <strong>Contabilidade Forense/Pericial</strong> - Analisa informações contábeis em contexto de fraude, litígio, conformidade legal.<br><br><strong>FUNÇÕES DA CONTABILIDADE</strong>: (1) <strong>Função Administrativa</strong> - Controlar o patrimônio, administrar recursos, proteger bens da entidade, prevenir fraudes, assegurar conformidade com leis e regulamentações. (2) <strong>Função Econômica</strong> - Fornecer informação que permita gestão eficiente dos recursos, avaliação de resultado econômico (lucro/prejuízo), rentabilidade de investimentos, comparação com períodos anteriores ou competidores.<br><br><strong>PRINCÍPIOS FUNDAMENTAIS DE CONTABILIDADE (CPC 00 - Estrutura Conceitual)</strong>: (1) <strong>Princípio da Entidade</strong> - Contabilidade se aplica a uma entidade identificável (pessoa física, jurídica). Patrimônio da entidade é distinto do patrimônio do proprietário. Transações são atribuídas à entidade, não ao sócio. (2) <strong>Princípio da Continuidade</strong> - Assume-se que a entidade continuará operando no futuro previsível, não em liquidação. Afeta avaliação de ativos (não usa valor de liquidação se há continuidade). (3) <strong>Princípio da Competência (ou Accruals)</strong> - Receitas e despesas são reconhecidas quando incorridas (não quando pagas/recebidas). Transações são registradas conforme direito/obrigação de empresa, não fluxo de caixa. Fundamental para lucro econômico versus fluxo de caixa. (4) <strong>Princípio da Materialidade</strong> - Informação relevante se omissão ou distorção afeta decisão do usuário. Transações imateriais podem ser agregadas ou tratadas com maior flexibilidade. (5) <strong>Princípio da Consistência</strong> - Políticas contábeis são mantidas consistentes período a período, permitindo comparabilidade. Mudanças devem ser divulgadas e justificadas. (6) <strong>Princípio da Prudência</strong> - Na presença de incerteza, escolhe-se alternativa que resulte em menor ativo/resultado (reconhece perdas prováveis, não reconhece ganhos prováveis). (7) <strong>Princípio da Relevância</strong> - Informação deve ser relevante para usuários, afetando suas decisões. (8) <strong>Princípio da Representação Fidedigna</strong> - Informação deve representar fielmente os fenômenos que pretende representar, completa, neutra, sem erro.<br><br><strong>CPC 00 - ESTRUTURA CONCEITUAL PARA RELATÓRIO FINANCEIRO</strong>: Documento que estabelece conceitos fundamentais para contabilidade sob IFRS. Define: (1) Objetivo da contabilidade financeira (informação útil para decisões econômicas). (2) Características qualitativas da informação (relevância, representação fidedigna, comparabilidade, verificabilidade, tempestividade, compreensibilidade). (3) Elementos de demonstrações financeiras (ativo, passivo, patrimônio líquido, receita, despesa, ganho, perda). (4) Reconhecimento de elementos (critérios para quando registrar). (5) Mensuração (como medir valor - custo histórico, valor justo, valor presente).<br><br><strong>DISTINÇÕES IMPORTANTES</strong>:<br>- <strong>Contabilidade vs Escrituração</strong>: Contabilidade é ciência (abordagem conceitual, interpretativa). Escrituração é atividade técnica (registrar operações em livros/sistema).<br>- <strong>Resultado vs Fluxo de Caixa</strong>: Resultado (lucro/prejuízo) segue princípio da competência (receitas menos despesas incorridas). Fluxo de caixa registra entradas/saídas reais de dinheiro. São diferentes e ambos informativos.<br>- <strong>Patrimônio vs Resultado</strong>: Patrimônio é estoque (o que tem em um momento). Resultado é fluxo (mudança ao longo de período). Patrimônio aumenta/diminui pelo resultado (lucro/prejuízo) e pelas transações com sócios.<br><br><strong>QUESTÕES TÍPICAS CEBRASPE</strong>: Afirmações sobre objetivo (&quot;Objetivo é observar se riqueza atinge fins propostos&quot; - CERTO), sobre conceito (&quot;Contabilidade estuda fenômenos patrimoniais&quot; - CERTO), sobre princípios (&quot;Competência exige reconhecimento quando incorrido, não quando pago&quot; - CERTO), sobre usuários (&quot;Governo usa contabilidade para arrecadação&quot; - CERTO). Banca também explora confusões: &quot;Objetivo é apenas registrar transações&quot; (ERRADO - objetivo é informação para decisão), &quot;Contabilidade é exata como matemática&quot; (ERRADO - é social/interpretativa).</div><div class="pl">Pegadinhas da banca</div><div class="pg">Confundir objetivo da contabilidade com objetivo de empresa: objetivo contábil é fornecer informação para decisão sobre se riqueza está sendo bem utilizada. Objetivo de empresa pode ser lucro, crescimento, etc.</div><div class="pg">Pensar que contabilidade é apenas escrituração: escrituração é atividade técnica (registrar). Contabilidade é ciência que interpreta, analisa, orienta decisão.</div><div class="pg">Competência vs Caixa: muitos pensam que lucro = dinheiro que entrou. Lucro segue competência (quando incorrido), caixa é quando efetivamente pago/recebido. Podem diferir completamente.</div><div class="pg">Princípio da prudência confundido com 'reconhecer tudo como perda': prudência significa reconhecer perdas PROVÁVEIS mas não ganhos PROVÁVEIS. Não significa ser pessimista irrestrito.</div><div class="pg">Ignorar que contabilidade se aplica além de empresa: ONGs, governo, pessoas física em contextos específicos também usam contabilidade. Campo de aplicação é amplo.</div><div class="pg">Pensar que CPC 00 é apenas teórico: CPC 00 é estrutura que fundamenta todas as normas brasileiras de contabilidade (CPC 01, 02, etc.). Compreensão é essencial.</div></div>
+</div>
+</div>
+<footer>Contabilidade Geral e Avançada · Aula 00 · Gerado a partir de 71 questões</footer>
+</div>
+</div><!-- /main-content -->
+
+<script>
+// ===== Resumo interactions =====
+function tgl(b){b.classList.toggle('open');b.nextElementSibling.classList.toggle('show')}
+
+// ===== Supabase Auth =====
+let sb=null, currentUser=null;
+
+function initSB(){
+  if(typeof SUPABASE_URL==='undefined'||SUPABASE_URL.includes('SEU-PROJETO'))return false;
+  sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);return true;
+}
+
+async function checkAuth(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(session){currentUser=session.user;showContent();}
+  else{document.getElementById('auth-gate').style.display='flex';}
+}
+
+function showContent(){
+  document.getElementById('auth-gate').style.display='none';
+  document.getElementById('main-content').style.display='block';
+}
+
+async function handleLogout(){if(sb)await sb.auth.signOut();location.href='/index.html';}
+
+document.getElementById('login-form').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const em=document.getElementById('login-email').value;
+  const pw=document.getElementById('login-pass').value;
+  const er=document.getElementById('login-error');er.textContent='';
+  const{data,error}=await sb.auth.signInWithPassword({email:em,password:pw});
+  if(error){er.textContent='Email ou senha incorretos.';return;}
+  currentUser=data.user;showContent();
+});
+
+// ===== Init =====
+document.addEventListener('DOMContentLoaded',()=>{
+  if(initSB()){checkAuth();}
+  else{showContent();}
+});
+</script>
+</body>
+</html>
