@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resumo — Aula 01 · Direito Constitucional</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/assets/config.js"></script>
+<style>
+:root{--bg:#0c0e13;--bg2:#13161e;--bg3:#1a1e2a;--accent:#f59e0b;--accent-soft:rgba(245,158,11,.1);--green:#34d399;--green-soft:rgba(52,211,153,.08);--blue:#60a5fa;--blue-soft:rgba(96,165,250,.08);--red:#f87171;--red-soft:rgba(248,113,113,.07);--purple:#a78bfa;--purple-soft:rgba(167,139,250,.08);--text:#e4e6ec;--dim:#8a8fa4;--faint:#4e5268;--border:#252937;--r:14px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.8;padding:2.5rem 1.2rem}
+.wrap{max-width:720px;margin:0 auto}
+header{text-align:center;margin-bottom:2.5rem}
+.badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:3px;color:var(--accent);background:var(--accent-soft);padding:5px 16px;border-radius:20px;margin-bottom:1rem}
+header h1{font-family:'DM Serif Display',serif;font-size:2rem;font-weight:400;line-height:1.3;margin-bottom:.4rem}
+header .sub{color:var(--dim);font-size:.9rem}
+.stats{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:2rem}
+.st{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 16px;font-size:.8rem;text-align:center}
+.st strong{color:var(--accent);font-size:1.2rem;display:block}
+.sec{margin-bottom:2.5rem}
+.sec-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:3px;color:var(--faint);margin-bottom:.6rem}
+.sec h2{font-family:'DM Serif Display',serif;font-size:1.3rem;font-weight:400;margin-bottom:1rem}
+hr.div{border:none;height:1px;background:var(--border);margin:2rem 0}
+
+/* TOPIC CARD */
+.tc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;margin-bottom:1.5rem;transition:border-color .2s}
+.tc.pareto{border-color:rgba(245,158,11,.25)}
+.tc-hdr{display:flex;align-items:center;margin-bottom:.8rem;flex-wrap:wrap;gap:8px}
+.rk{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#000;font-weight:700;font-size:.8rem;flex-shrink:0}
+.tn{font-weight:700;font-size:1.05rem;flex:1}
+.pareto-badge{display:inline-flex;align-items:center;gap:4px;font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent);background:var(--accent-soft);padding:4px 12px;border-radius:20px;flex-shrink:0}
+.tc-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+.mt{font-size:.68rem;padding:3px 10px;border-radius:20px;background:var(--bg3);color:var(--dim);font-family:'JetBrains Mono',monospace}
+.mt.ceb{border:1px solid rgba(96,165,250,.3);color:var(--blue)}
+.mt.ot{border:1px solid rgba(245,158,11,.3);color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
+.ch{font-size:.73rem;padding:4px 12px;border-radius:20px;background:var(--bg3);color:var(--dim);border:1px solid var(--border)}
+
+/* ANALOGIA */
+.an{background:var(--bg2);border-radius:var(--r);padding:1.3rem;margin-bottom:1rem;border:1px solid var(--border)}
+.an .icon{font-size:1.6rem;margin-bottom:.4rem}
+.an p{font-size:.9rem;color:var(--dim);line-height:1.75}
+.an p strong{color:var(--text);font-weight:600}
+
+/* MNEMONIC */
+.mn{background:var(--bg3);border:1px dashed var(--accent);border-radius:var(--r);padding:1rem 1.3rem;margin-bottom:1rem;text-align:center}
+.mn .ms{font-family:'JetBrains Mono',monospace;font-size:.95rem;color:var(--accent);font-weight:600;letter-spacing:1px}
+.mn .me{font-size:.8rem;color:var(--dim);margin-top:.3rem}
+
+/* PAIR */
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1rem}
+.bx{padding:1.1rem;border-radius:var(--r);border:1px solid var(--border)}
+.bx.g{background:var(--green-soft);border-color:rgba(52,211,153,.15)}
+.bx.b{background:var(--blue-soft);border-color:rgba(96,165,250,.15)}
+.bx .bl{font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:2px;margin-bottom:.4rem}
+.bx.g .bl{color:var(--green)}
+.bx.b .bl{color:var(--blue)}
+.bx .bt{font-weight:700;font-size:.95rem;margin-bottom:.3rem}
+.bx p{font-size:.85rem;color:var(--dim);line-height:1.7}
+.bx p strong{color:var(--text);font-weight:600}
+
+/* RESUMO & PEGADINHAS */
+.rt{font-size:.9rem;line-height:1.8;color:var(--dim);margin-bottom:1rem}
+.rt strong{color:var(--text);font-weight:600}
+.pg{background:var(--red-soft);border-left:3px solid var(--red);padding:.8rem 1rem;margin-bottom:.6rem;border-radius:0 8px 8px 0;font-size:.85rem;color:var(--dim);line-height:1.7}
+.pg::before{content:"⚠ ";color:var(--red);font-weight:700}
+.pl{font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--red);margin-bottom:.5rem;margin-top:1rem}
+
+/* COLLAPSE */
+.cb{width:100%;text-align:left;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.88rem;display:flex;align-items:center;gap:8px;transition:border-color .2s;margin-top:.5rem}
+.cb:hover{border-color:var(--accent)}
+.cb .ar{transition:transform .2s;color:var(--accent);font-size:.75rem}
+.cb.open .ar{transform:rotate(90deg)}
+.cbd{display:none;padding:1rem 0 0;animation:fi .25s ease}
+.cbd.show{display:block}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+
+/* PARETO INFO */
+.pareto-info{background:var(--accent-soft);border:1px solid rgba(245,158,11,.15);border-radius:var(--r);padding:1.2rem 1.5rem;margin-bottom:2rem;font-size:.88rem;color:var(--dim);line-height:1.7}
+.pareto-info strong{color:var(--accent)}
+
+footer{text-align:center;margin-top:2rem;color:var(--faint);font-size:.72rem;font-family:'JetBrains Mono',monospace}
+
+/* Auth gate */
+#auth-gate{display:none;position:fixed;inset:0;z-index:9999;background:var(--bg);justify-content:center;align-items:center;flex-direction:column}
+.login-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:40px 36px;max-width:380px;width:90%;text-align:center}
+.login-box h1{font-size:1.4rem;margin-bottom:6px}
+.login-box .subtitle{color:var(--dim);font-size:.85rem;margin-bottom:28px}
+.login-box input{display:block;width:100%;padding:10px 14px;margin-bottom:12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.95rem;font-family:inherit}
+.login-box input:focus{outline:none;border-color:var(--accent)}
+.login-box button[type=submit]{width:100%;padding:10px;background:#238636;color:#fff;border:none;border-radius:6px;font-size:.95rem;font-weight:600;cursor:pointer;margin-top:4px}
+.login-box button[type=submit]:hover{background:#2ea043}
+#login-error{color:#f87171;font-size:.85rem;margin-top:10px;min-height:1.2em}
+
+.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+#logout-btn{background:var(--bg2);border:1px solid var(--border);color:var(--dim);padding:6px 14px;border-radius:6px;font-size:.75rem;cursor:pointer;font-family:inherit}
+#logout-btn:hover{border-color:var(--red);color:var(--red)}
+
+@media(max-width:580px){
+  header h1{font-size:1.5rem}
+  body{padding:1.5rem .8rem}
+  .pair{grid-template-columns:1fr}
+  .tc-hdr{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<!-- Auth Gate -->
+<div id="auth-gate">
+<div class="login-box">
+<h1>Resumo de Memorização</h1>
+<p class="subtitle">Faça login para acessar o material</p>
+<form id="login-form">
+<input type="email" id="login-email" placeholder="Email" required autocomplete="email">
+<input type="password" id="login-pass" placeholder="Senha" required autocomplete="current-password">
+<button type="submit">Entrar</button>
+</form>
+<p id="login-error"></p>
+</div>
+</div>
+
+<!-- Main Content -->
+<div id="main-content" style="display:none">
+<div class="top-bar">
+<a href="/index.html" class="back-link">&#8592; Painel de Estudos</a>
+<button id="logout-btn" onclick="handleLogout()">Sair</button>
+</div>
+<div class="wrap">
+<header>
+<div class="badge">Resumo de Memorização</div>
+<h1>Aula 01 — Direito Constitucional</h1>
+<p class="sub">87 questões analisadas · 2 tópicos</p>
+</header>
+<div class="stats">
+<div class="st"><strong>87</strong>Questões</div>
+<div class="st"><strong>66</strong>CEBRASPE</div>
+<div class="st"><strong>21</strong>FGV</div>
+<div class="st"><strong>2</strong>Tópicos</div>
+</div>
+<div class="pareto-info">
+<strong>Princípio de Pareto:</strong> 2 de 2 tópicos concentram <strong>100%</strong> das questões (87 de 87).
+Esses tópicos receberam tratamento personalizado com analogias, mnemônicos e comparações visuais — marcados com ⭐.
+</div>
+<div class="sec">
+<div class="sec-tag">Tópicos rankeados por cobrança</div>
+<h2>Do mais cobrado ao menos cobrado</h2>
+<div class="tc pareto">
+<div class="tc-hdr"><span class="rk">1</span><span class="tn">Interpretação Constitucional</span><span class="pareto-badge">⭐ Personalizado</span></div>
+<div class="tc-meta"><span class="mt">60q</span><span class="mt ceb">CEBRASPE 39</span><span class="mt ot">FGV 21</span></div>
+<div class="chips"><span class="ch">Conceito de hermenêutica constitucional e sua finalidade</span><span class="ch">Intérpretes da Constituição: Judiciário, Executivo e Legislativo</span><span class="ch">Sociedade aberta dos intérpretes (Peter Häberle)</span><span class="ch">Métodos de interpretação constitucional</span><span class="ch">Princípios da interpretação constitucional</span><span class="ch">Mutação constitucional e normatividade</span><span class="ch">Recepção e revogação de normas constitucionais</span></div>
+<div class="an"><div class="icon">📖</div><p>A <strong>interpretação constitucional</strong> é como um maestro regendo uma orquestra. Assim como o maestro não inventa sons, mas coordena cada instrumento (método <strong>gramatical</strong>), observa como cada um toca em relação aos outros (método <strong>sistemático</strong>), conhece a história da peça (método <strong>histórico</strong>) e busca o efeito final desejado (método <strong>teleológico</strong>), o intérprete da Constituição não inventa direitos, mas coordena as <strong>normas constitucionais</strong> para que funcionem em harmonia. A <strong>sociedade aberta dos intérpretes</strong> significa que todos na orquestra (cidadãos, políticos, juízes) contribuem para este resultado final.</p></div><div class="pair">
+<div class="bx g"><div class="bl">INTERPRETAÇÃO</div><div class="bt">Hermenêutica Fechada (Antiga)</div><p>Apenas juízes intérpretam a Constituição. Atividade restrita a um pequeno grupo. Sociedade fechada. Rejeita participação de cidadãos e órgãos políticos.</p></div>
+<div class="bx b"><div class="bl">INTERPRETAÇÃO</div><div class="bt">Hermenêutica Aberta (Häberle)</div><p>Todos que vivenciam a Constituição são intérpretes: cidadãos, órgãos públicos, opinião pública, grupos sociais. Atividade democrática, participativa e pluralista.</p></div>
+</div><div class="pair">
+<div class="bx g"><div class="bl">MUTAÇÃO</div><div class="bt">Mutação Constitucional</div><p>Alteração do significado/interpretação da norma constitucional SEM mudança do texto escrito. Ocorre por mudança dos fatores reais de poder.</p></div>
+<div class="bx b"><div class="bl">MUDANÇA</div><div class="bt">Emenda à Constituição</div><p>Alteração formal do próprio texto escrito da Constituição. Exige processo legislativo específico (quórum e votação qualificados).</p></div>
+</div><div class="pair">
+<div class="bx g"><div class="bl">RECEPÇÃO</div><div class="bt">Recepção de Norma Anterior</div><p>Norma infraconstitucional anterior compatível com nova Constituição continua vigendo com o mesmo status (infraconstitucional).</p></div>
+<div class="bx b"><div class="bl">RECEPÇÃO</div><div class="bt">Recepção Material (Constitucional)</div><p>Norma de constituição anterior é recepcionada com novo status: passa a ser NORMA CONSTITUCIONAL (não infraconstitucional).</p></div>
+</div><div class="mn"><div class="ms">GUESS</div><div class="me">Métodos de Interpretação: **G**ramatical, **U**nidade, Sem-violência (Sistemático), **E**fetividade, **S**ociológico</div></div><div class="mn"><div class="ms">MUCEF</div><div class="me">Princípios: **M**utação, **U**nidade, **C**oncordância Prática, **E**fetividade, **F**orça Normativa</div></div><div class="mn"><div class="ms">HÄBERLE</div><div class="me">**H**ermenêutica Aberta - **Ä**mbito Amplo - **B**uscando **E**ficácia - **R**econhecendo **L**egitimidade - **E**statais (e não-estatais)</div></div>
+<button class="cb" onclick="tgl(this)"><span class="ar">▶</span> Resumo completo + Pegadinhas</button>
+<div class="cbd"><div class="rt">A <strong>Interpretação Constitucional</strong> é a atividade hermenêutica fundamental para compreender, investigar e dar sentido ao texto da Constituição Federal, servindo para solucionar conflitos entre bens jurídicos protegidos pela Carta Magna e para dar eficácia às normas constitucionais. Contrariamente ao que muitos acreditam, a interpretação constitucional não é atividade exclusiva do <strong>Judiciário</strong>. Tanto o Poder Judiciário quanto o Executivo e o Legislativo interpretam a Constituição no exercício de suas funções.<br><br>A teoria da &quot;<strong>sociedade aberta dos intérpretes</strong>&quot; foi desenvolvida pelo jurista alemão <strong>Peter Häberle</strong> e representa um marco fundamental no direito constitucional. Segundo esta abordagem, são intérpretes da Constituição todos aqueles que a vivenciam: os cidadãos, os órgãos públicos, a opinião pública, os grupos sociais e as organizações. Isso amplia drasticamente o círculo de sujeitos que participam do processo interpretativo, transformando-o de uma atividade fechada (restrita aos magistrados) para uma atividade aberta e democrática. Esta concepção ganhou ainda mais força após os estudos de Häberle sobre a crise do processo democrático nos anos 1970 na Alemanha.<br><br>Existem diversos <strong>métodos de interpretação constitucional</strong>: o método <strong>gramatical</strong> (analisa o texto e suas palavras), o método <strong>histórico</strong> (considera o contexto histórico de elaboração), o método <strong>sistemático</strong> (interpreta a norma em relação ao sistema constitucional como um todo) e o método <strong>teleológico</strong> (busca a finalidade da norma). Além destes, há também o método <strong>comparativo</strong> (compara constituições de diferentes países) e o método <strong>sociológico</strong> (considera os fatores sociais e reais de poder).<br><br>Os <strong>princípios da interpretação constitucional</strong> incluem: (a) <strong>Princípio da Unidade da Constituição</strong> - a Constituição deve ser interpretada como um todo integrado e harmônico, jamais isolando normas; (b) <strong>Princípio da Concordância Prática</strong> - quando há conflito entre normas constitucionais, deve-se harmonizá-las, realizando uma concordância prática entre os bens jurídicos envolvidos; (c) <strong>Princípio da Efetividade ou Eficácia</strong> - as normas constitucionais devem ser interpretadas de modo a lhes dar máxima efetividade e aplicabilidade concreta; (d) <strong>Princípio da Força Normativa da Constituição</strong> - a interpretação deve afirmar a força vinculante e imperativa da Constituição, não a reduzindo a mero documento político; (e) <strong>Princípio da Interpretação Conforme a Constituição</strong> - as normas infraconstitucionais devem ser interpretadas em conformidade com a Constituição.<br><br>A <strong>normatividade constitucional</strong> refere-se à capacidade vinculante das normas constitucionais. Atualmente, é amplamente reconhecido que todas as normas constitucionais são dotadas de <strong>eficácia normativa</strong>, inclusive as normas programáticas. A discussão sobre a existência ou não de <strong>mutações constitucionais</strong> é importante: mutação constitucional é a alteração do significado de uma norma constitucional sem mudança do seu texto. Estas ocorrem quando, apesar da Constituição manter seu texto original, a interpretação dada à norma se altera ao longo do tempo em razão de mudanças nos fatores reais de poder e nas circunstâncias sociais.<br><br>A <strong>recepção constitucional</strong> (ou recepção material) é o fenômeno pelo qual uma norma de constituição anterior é recepcionada pela nova constituição com um novo status: norma constitucional em vez de norma infraconstitucional. Por outro lado, quando uma norma infraconstitucional é compatível com a nova Constituição, ela é recepcionada; quando é incompatível, é revogada por falta de recepção. A <strong>repristinação constitucional</strong> não é acolhida no direito constitucional brasileiro, ou seja, não se restaura automaticamente uma norma anterior apenas porque a norma que a revogou deixou de vigorar.</div><div class="pl">Pegadinhas da banca</div><div class="pg">Interpretação constitucional é atividade exclusiva do Judiciário - ERRADO! Os Poderes Executivo e Legislativo também interpretam a Constituição</div><div class="pg">A mutação constitucional altera o texto da Constituição - ERRADO! Altera apenas o significado/interpretação, mantendo o texto intacto</div><div class="pg">Todas as normas constitucionais têm eficácia imediata - ERRADO! Normas programáticas têm eficácia limitada, não imediata</div><div class="pg">A recepção de norma anterior ocorre automaticamente - ERRADO! Depende de compatibilidade material com a nova Constituição</div><div class="pg">O método teleológico ignore o texto da Constituição - ERRADO! Busca a finalidade respeitando o texto como limite</div></div>
+</div><div class="tc pareto">
+<div class="tc-hdr"><span class="rk">2</span><span class="tn">Aplicação das Normas Constitucionais no Tempo</span><span class="pareto-badge">⭐ Personalizado</span></div>
+<div class="tc-meta"><span class="mt">27q</span><span class="mt ceb">CEBRASPE 27</span></div>
+<div class="chips"><span class="ch">Efeitos da nova Constituição: revogação, recepção e mutação</span><span class="ch">Poder constituinte originário e seus efeitos</span><span class="ch">Retroatividade das normas constitucionais</span><span class="ch">Direito adquirido, ato jurídico perfeito e coisa julgada</span><span class="ch">Recepção constitucional de normas anteriores</span><span class="ch">Inconstitucionalidade superveniente</span><span class="ch">Disposições Constitucionais Transitórias (ADCT)</span></div>
+<div class="an"><div class="icon">⚖️</div><p>A <strong>aplicação das normas constitucionais no tempo</strong> é como uma mudança de regime em uma empresa. Quando nova administração chega (novo Poder Constituinte), a estrutura antiga (Constituição anterior) é dissolvida (revogada). As regras operacionais antigas (normas infraconstitucionais) continuam funcionando se o novo regime as acolhe (recepção); caso contrário, são descartadas. Porém, contratos já assinados (direitos adquiridos), acordos já fechados (atos jurídicos perfeitos) e decisões já transitadas em julgado (coisa julgada) permanecem intocáveis - mesmo que a nova administração não goste, não pode destruir o que já estava consolidado. As <strong>cláusulas pétreas</strong> são como o estatuto social da empresa: nem mesmo emendas constitucionais podem mexer nelas.</p></div><div class="pair">
+<div class="bx g"><div class="bl">ANTERIORIDADE</div><div class="bt">Lei Anterior x Constituição Anterior</div><p>Lei anterior à nova CF pode ser inconstitucional em relação a ela (inconstitucionalidade superveniente). Será revogada se incompatível.</p></div>
+<div class="bx b"><div class="bl">ANTERIORIDADE</div><div class="bt">Constituição Anterior x Nova Constituição</div><p>Constituição anterior é SEMPRE integralmente revogada pela nova, automaticamente, sem necessidade de menção expressa.</p></div>
+</div><div class="pair">
+<div class="bx g"><div class="bl">RECEPÇÃO</div><div class="bt">Recepção Simples</div><p>Norma infraconstitucional anterior compatível com nova CF continua vigendo como norma infraconstitucional (mesmo status anterior).</p></div>
+<div class="bx b"><div class="bl">RECEPÇÃO</div><div class="bt">Recepção Material</div><p>Norma de constituição anterior é recepcionada com novo status: TORNA-SE NORMA CONSTITUCIONAL (elevação de status).</p></div>
+</div><div class="pair">
+<div class="bx g"><div class="bl">PROTEÇÃO</div><div class="bt">Direito Adquirido</div><p>Direito consolidado no patrimônio conforme lei anterior. Não pode sofrer retroatividade. Protegido contra emendas (cláusula pétrea).</p></div>
+<div class="bx b"><div class="bl">PROTEÇÃO</div><div class="bt">Coisa Julgada</div><p>Decisão judicial transitada em julgado. Adquire imutabilidade absoluta. Intocável até por emenda constitucional (cláusula pétrea).</p></div>
+</div><div class="mn"><div class="ms">DRAC</div><div class="me">Institutos protegidos contra retroatividade: **D**ireito Adquirido, **R**etroatividade, **A**to Jurídico Perfeito, **C**oisa Julgada</div></div><div class="mn"><div class="ms">RECEPÇÃO</div><div class="me">**R**etém norma anterior - **E**m consonância - **C**om novo texto - **E**fetiva se compatível - **P**ermanece vigente - **Ç**Ão automática - **Ã**O por ausência se incompatível - **O**rigina segurança jurídica</div></div><div class="mn"><div class="ms">PODER</div><div class="me">**P**oder Constituinte **O**riginário (novo Estado) - **D**erivado **E**mendador (reforma) - **R**estricto pelas cláusulas pétreas</div></div>
+<button class="cb" onclick="tgl(this)"><span class="ar">▶</span> Resumo completo + Pegadinhas</button>
+<div class="cbd"><div class="rt">A <strong>Aplicação das Normas Constitucionais no Tempo</strong> estuda os efeitos que ocorrem quando uma nova Constituição entra em vigor, especialmente como ela se relaciona com as normas vigentes anteriormente. Quando o <strong>Poder Constituinte Originário</strong> se manifesta criando uma nova Constituição, ele está inaugurando um novo Estado, rompendo com a ordem jurídica anterior e estabelecendo uma completamente nova. Desta ruptura radical resultam <strong>três efeitos principais</strong>: a revogação da Constituição anterior, a possível recepção de normas infraconstitucionais compatíveis, e a possibilidade de mutação em normas que alterem seu significado.<br><br>A <strong>Constituição anterior é integralmente revogada</strong> pela simples entrada em vigor da nova Constituição. Não há necessidade de disposição expressa revogando-a, a revogação ocorre automaticamente por incompatibilidade material. Porém, as <strong>normas infraconstitucionais</strong> (leis, decretos, etc.) anteriores à nova Constituição não são automaticamente revogadas. Elas continuam vigendo se forem <strong>compatíveis materialmente</strong> com a nova ordem constitucional. Este fenômeno chama-se <strong>recepção</strong>: a norma anterior é &quot;recepcionada&quot; ou &quot;acolhida&quot; pela nova Constituição, mantendo-se vigente. Se uma norma infraconstitucional for <strong>incompatível</strong> com a nova Constituição, ela é revogada por falta de recepção, não por disposição expressa.<br><br>Importante distinguir: <strong>uma lei anterior não pode ser inconstitucional em relação à Constituição anterior que a produziu</strong>. A inconstitucionalidade é um vício relacional: uma norma é inconstitucional quando viola a Constituição vigente no momento em que se avalia sua validade. A <strong>inconstitucionalidade superveniente</strong> é aquela que surge posteriormente quando uma Constituição nova entra em vigor e a norma anterior torna-se incompatível com ela. A <strong>recepção material ou constitucional</strong> é fenômeno específico: quando uma norma de constituição anterior é recepcionada como <strong>norma constitucional</strong> (não como infraconstitucional) pela nova Constituição. Isto ocorre quando o novo texto constitucional incorpora materialmente o conteúdo de normas constitucionais anteriores.<br><br>A <strong>retroatividade e seus limites</strong> são aspectos cruciais. O direito brasileiro protege certas situações do passado através de três institutos principais: (a) <strong>Direito Adquirido</strong> - aquele incorporado ao patrimônio da pessoa, consolidado conforme a lei vigente à época; (b) <strong>Ato Jurídico Perfeito</strong> - aquele cujos requisitos necessários para sua formação foram preenchidos sob a lei anterior; (c) <strong>Coisa Julgada</strong> - decisão judicial transitada em julgado, que adquire imutabilidade. Estes três institutos não podem ser afetados retroativamente nem por emenda constitucional, pois estão protegidos pelo <strong>núcleo duro da Constituição</strong> (cláusulas pétreas). Portanto, mesmo que a Constituição mude, situações já consolidadas sob a lei anterior não podem ser desfeitas.<br><br>O <strong>Poder Constituinte Derivado Reformador</strong> (também chamado poder de reforma ou emendador) é competência dos órgãos constituídos para emendar a Constituição vigente, sob as limitações impostas pelas <strong>cláusulas pétreas</strong> (Art. 60, §4º). Já o <strong>Poder Constituinte Derivado Decorrente</strong> refere-se à competência dos estados-membros para elaborar suas próprias constituições estaduais, sempre respeitando os princípios da Constituição Federal. As <strong>Disposições Constitucionais Transitórias (ADCT)</strong> são normas temporárias de transição entre a ordem jurídica antiga e a nova, presentes no texto transitório da Constituição de 1988, que estabelecem prazos e procedimentos especiais de adaptação.<br><br>A <strong>repristinação</strong> (restauração automática de norma anterior) <strong>não é acolhida</strong> no direito constitucional brasileiro. Isto significa que se uma norma A é revogada pela norma B, e depois B é revogada, A não ressurge automaticamente. Seria necessário que A fosse explicitamente restaurada por novo ato normativo. Este princípio reforça a importância da segurança jurídica: as situações consolidadas sob a norma B não podem ser afetadas simplesmente porque B deixou de vigorar.</div><div class="pl">Pegadinhas da banca</div><div class="pg">Lei anterior pode ser inconstitucional em relação à Constituição anterior - ERRADO! Inconstitucionalidade é vício relacional com a Constituição contemporânea</div><div class="pg">Recepção de norma anterior ocorre quando é compatível com a nova Constituição e mantém status infraconstitucional - CUIDADO! Existe recepção material que transforma norma infraconstitucional anterior em norma constitucional</div><div class="pg">Direito adquirido pode ser revogado por emenda constitucional - ERRADO! É cláusula pétrea, protegido contra qualquer mudança constitucional</div><div class="pg">Repristinação ocorre automaticamente quando norma revogadora deixa de vigorar - ERRADO! Não é acolhida no Brasil, exige restauração expressa</div><div class="pg">Coisa julgada pode ser afetada por nova Constituição - ERRADO! Está entre as cláusulas pétreas, protegida contra qualquer alteração</div></div>
+</div>
+</div>
+<footer>Direito Constitucional · Aula 01 · Gerado a partir de 87 questões</footer>
+</div>
+</div><!-- /main-content -->
+
+<script>
+// ===== Resumo interactions =====
+function tgl(b){b.classList.toggle('open');b.nextElementSibling.classList.toggle('show')}
+
+// ===== Supabase Auth =====
+let sb=null, currentUser=null;
+
+function initSB(){
+  if(typeof SUPABASE_URL==='undefined'||SUPABASE_URL.includes('SEU-PROJETO'))return false;
+  sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);return true;
+}
+
+async function checkAuth(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(session){currentUser=session.user;showContent();}
+  else{document.getElementById('auth-gate').style.display='flex';}
+}
+
+function showContent(){
+  document.getElementById('auth-gate').style.display='none';
+  document.getElementById('main-content').style.display='block';
+}
+
+async function handleLogout(){if(sb)await sb.auth.signOut();location.href='/index.html';}
+
+document.getElementById('login-form').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const em=document.getElementById('login-email').value;
+  const pw=document.getElementById('login-pass').value;
+  const er=document.getElementById('login-error');er.textContent='';
+  const{data,error}=await sb.auth.signInWithPassword({email:em,password:pw});
+  if(error){er.textContent='Email ou senha incorretos.';return;}
+  currentUser=data.user;showContent();
+});
+
+// ===== Init =====
+document.addEventListener('DOMContentLoaded',()=>{
+  if(initSB()){checkAuth();}
+  else{showContent();}
+});
+</script>
+</body>
+</html>

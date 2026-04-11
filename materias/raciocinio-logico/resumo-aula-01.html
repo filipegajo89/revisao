@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resumo — Aula 01 · Raciocínio Lógico</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/assets/config.js"></script>
+<style>
+:root{--bg:#0c0e13;--bg2:#13161e;--bg3:#1a1e2a;--accent:#f59e0b;--accent-soft:rgba(245,158,11,.1);--green:#34d399;--green-soft:rgba(52,211,153,.08);--blue:#60a5fa;--blue-soft:rgba(96,165,250,.08);--red:#f87171;--red-soft:rgba(248,113,113,.07);--purple:#a78bfa;--purple-soft:rgba(167,139,250,.08);--text:#e4e6ec;--dim:#8a8fa4;--faint:#4e5268;--border:#252937;--r:14px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.8;padding:2.5rem 1.2rem}
+.wrap{max-width:720px;margin:0 auto}
+header{text-align:center;margin-bottom:2.5rem}
+.badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:3px;color:var(--accent);background:var(--accent-soft);padding:5px 16px;border-radius:20px;margin-bottom:1rem}
+header h1{font-family:'DM Serif Display',serif;font-size:2rem;font-weight:400;line-height:1.3;margin-bottom:.4rem}
+header .sub{color:var(--dim);font-size:.9rem}
+.stats{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:2rem}
+.st{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 16px;font-size:.8rem;text-align:center}
+.st strong{color:var(--accent);font-size:1.2rem;display:block}
+.sec{margin-bottom:2.5rem}
+.sec-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:3px;color:var(--faint);margin-bottom:.6rem}
+.sec h2{font-family:'DM Serif Display',serif;font-size:1.3rem;font-weight:400;margin-bottom:1rem}
+hr.div{border:none;height:1px;background:var(--border);margin:2rem 0}
+
+/* TOPIC CARD */
+.tc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;margin-bottom:1.5rem;transition:border-color .2s}
+.tc.pareto{border-color:rgba(245,158,11,.25)}
+.tc-hdr{display:flex;align-items:center;margin-bottom:.8rem;flex-wrap:wrap;gap:8px}
+.rk{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#000;font-weight:700;font-size:.8rem;flex-shrink:0}
+.tn{font-weight:700;font-size:1.05rem;flex:1}
+.pareto-badge{display:inline-flex;align-items:center;gap:4px;font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent);background:var(--accent-soft);padding:4px 12px;border-radius:20px;flex-shrink:0}
+.tc-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+.mt{font-size:.68rem;padding:3px 10px;border-radius:20px;background:var(--bg3);color:var(--dim);font-family:'JetBrains Mono',monospace}
+.mt.ceb{border:1px solid rgba(96,165,250,.3);color:var(--blue)}
+.mt.ot{border:1px solid rgba(245,158,11,.3);color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
+.ch{font-size:.73rem;padding:4px 12px;border-radius:20px;background:var(--bg3);color:var(--dim);border:1px solid var(--border)}
+
+/* ANALOGIA */
+.an{background:var(--bg2);border-radius:var(--r);padding:1.3rem;margin-bottom:1rem;border:1px solid var(--border)}
+.an .icon{font-size:1.6rem;margin-bottom:.4rem}
+.an p{font-size:.9rem;color:var(--dim);line-height:1.75}
+.an p strong{color:var(--text);font-weight:600}
+
+/* MNEMONIC */
+.mn{background:var(--bg3);border:1px dashed var(--accent);border-radius:var(--r);padding:1rem 1.3rem;margin-bottom:1rem;text-align:center}
+.mn .ms{font-family:'JetBrains Mono',monospace;font-size:.95rem;color:var(--accent);font-weight:600;letter-spacing:1px}
+.mn .me{font-size:.8rem;color:var(--dim);margin-top:.3rem}
+
+/* PAIR */
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1rem}
+.bx{padding:1.1rem;border-radius:var(--r);border:1px solid var(--border)}
+.bx.g{background:var(--green-soft);border-color:rgba(52,211,153,.15)}
+.bx.b{background:var(--blue-soft);border-color:rgba(96,165,250,.15)}
+.bx .bl{font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:2px;margin-bottom:.4rem}
+.bx.g .bl{color:var(--green)}
+.bx.b .bl{color:var(--blue)}
+.bx .bt{font-weight:700;font-size:.95rem;margin-bottom:.3rem}
+.bx p{font-size:.85rem;color:var(--dim);line-height:1.7}
+.bx p strong{color:var(--text);font-weight:600}
+
+/* RESUMO & PEGADINHAS */
+.rt{font-size:.9rem;line-height:1.8;color:var(--dim);margin-bottom:1rem}
+.rt strong{color:var(--text);font-weight:600}
+.pg{background:var(--red-soft);border-left:3px solid var(--red);padding:.8rem 1rem;margin-bottom:.6rem;border-radius:0 8px 8px 0;font-size:.85rem;color:var(--dim);line-height:1.7}
+.pg::before{content:"⚠ ";color:var(--red);font-weight:700}
+.pl{font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--red);margin-bottom:.5rem;margin-top:1rem}
+
+/* COLLAPSE */
+.cb{width:100%;text-align:left;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.88rem;display:flex;align-items:center;gap:8px;transition:border-color .2s;margin-top:.5rem}
+.cb:hover{border-color:var(--accent)}
+.cb .ar{transition:transform .2s;color:var(--accent);font-size:.75rem}
+.cb.open .ar{transform:rotate(90deg)}
+.cbd{display:none;padding:1rem 0 0;animation:fi .25s ease}
+.cbd.show{display:block}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+
+/* PARETO INFO */
+.pareto-info{background:var(--accent-soft);border:1px solid rgba(245,158,11,.15);border-radius:var(--r);padding:1.2rem 1.5rem;margin-bottom:2rem;font-size:.88rem;color:var(--dim);line-height:1.7}
+.pareto-info strong{color:var(--accent)}
+
+footer{text-align:center;margin-top:2rem;color:var(--faint);font-size:.72rem;font-family:'JetBrains Mono',monospace}
+
+/* Auth gate */
+#auth-gate{display:none;position:fixed;inset:0;z-index:9999;background:var(--bg);justify-content:center;align-items:center;flex-direction:column}
+.login-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:40px 36px;max-width:380px;width:90%;text-align:center}
+.login-box h1{font-size:1.4rem;margin-bottom:6px}
+.login-box .subtitle{color:var(--dim);font-size:.85rem;margin-bottom:28px}
+.login-box input{display:block;width:100%;padding:10px 14px;margin-bottom:12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.95rem;font-family:inherit}
+.login-box input:focus{outline:none;border-color:var(--accent)}
+.login-box button[type=submit]{width:100%;padding:10px;background:#238636;color:#fff;border:none;border-radius:6px;font-size:.95rem;font-weight:600;cursor:pointer;margin-top:4px}
+.login-box button[type=submit]:hover{background:#2ea043}
+#login-error{color:#f87171;font-size:.85rem;margin-top:10px;min-height:1.2em}
+
+.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+#logout-btn{background:var(--bg2);border:1px solid var(--border);color:var(--dim);padding:6px 14px;border-radius:6px;font-size:.75rem;cursor:pointer;font-family:inherit}
+#logout-btn:hover{border-color:var(--red);color:var(--red)}
+
+@media(max-width:580px){
+  header h1{font-size:1.5rem}
+  body{padding:1.5rem .8rem}
+  .pair{grid-template-columns:1fr}
+  .tc-hdr{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<!-- Auth Gate -->
+<div id="auth-gate">
+<div class="login-box">
+<h1>Resumo de Memorização</h1>
+<p class="subtitle">Faça login para acessar o material</p>
+<form id="login-form">
+<input type="email" id="login-email" placeholder="Email" required autocomplete="email">
+<input type="password" id="login-pass" placeholder="Senha" required autocomplete="current-password">
+<button type="submit">Entrar</button>
+</form>
+<p id="login-error"></p>
+</div>
+</div>
+
+<!-- Main Content -->
+<div id="main-content" style="display:none">
+<div class="top-bar">
+<a href="/index.html" class="back-link">&#8592; Painel de Estudos</a>
+<button id="logout-btn" onclick="handleLogout()">Sair</button>
+</div>
+<div class="wrap">
+<header>
+<div class="badge">Resumo de Memorização</div>
+<h1>Aula 01 — Raciocínio Lógico</h1>
+<p class="sub">110 questões analisadas · 2 tópicos</p>
+</header>
+<div class="stats">
+<div class="st"><strong>110</strong>Questões</div>
+<div class="st"><strong>27</strong>CEBRASPE</div>
+<div class="st"><strong>18</strong>FGV</div>
+<div class="st"><strong>2</strong>Tópicos</div>
+</div>
+<div class="pareto-info">
+<strong>Princípio de Pareto:</strong> 1 de 2 tópicos concentram <strong>90%</strong> das questões (99 de 110).
+Esses tópicos receberam tratamento personalizado com analogias, mnemônicos e comparações visuais — marcados com ⭐.
+</div>
+<div class="sec">
+<div class="sec-tag">Tópicos rankeados por cobrança</div>
+<h2>Do mais cobrado ao menos cobrado</h2>
+<div class="tc pareto">
+<div class="tc-hdr"><span class="rk">1</span><span class="tn">Equivalências Lógicas</span><span class="pareto-badge">⭐ Personalizado</span></div>
+<div class="tc-meta"><span class="mt">99q</span><span class="mt ceb">CEBRASPE 20</span><span class="mt ot">FGV 17</span></div>
+<div class="chips"><span class="ch">Contrapositiva de Proposições Condicionais</span><span class="ch">Leis de De Morgan para Negações</span><span class="ch">Equivalências Condicionais e Biconcionais</span><span class="ch">Dupla Negação e Idempotência Lógica</span><span class="ch">Lei da Absorção em Lógica Proposicional</span><span class="ch">Comutatividade e Associatividade</span><span class="ch">Distributividade Lógica (Conjunção/Disjunção)</span></div>
+<div class="an"><div class="icon">🔄</div><p>Equivalências lógicas são como <strong>sinônimos em português</strong>: &quot;Se está chovendo, chão molha&quot; ≡ &quot;Chão molha porque choveu&quot; - <strong>mesma informação, formas diferentes</strong>. De Morgan é como <strong>distribuir &quot;não&quot;</strong>: &quot;não (gato E cão)&quot; = &quot;não gato OU não cão&quot;.</p></div><div class="pair">
+<div class="bx g"><div class="bl">CONJUNÇÃO</div><div class="bt">(p ∧ q) AND</div><p>Ambas verdadeiras. De Morgan: ~(p∧q) = ~p∨~q</p></div>
+<div class="bx b"><div class="bl">DISJUNÇÃO</div><div class="bt">(p ∨ q) OR</div><p>Ao menos uma verdadeira. De Morgan: ~(p∨q) = ~p∧~q</p></div>
+</div><div class="pair">
+<div class="bx g"><div class="bl">CONDICIONAL</div><div class="bt">p → q</div><p>Falso só quando p verdadeiro e q falso</p></div>
+<div class="bx b"><div class="bl">CONTRAPOSITIVA</div><div class="bt">~q → ~p</div><p>Sempre equivalente ao condicional original</p></div>
+</div><div class="mn"><div class="ms">CP</div><div class="me">Contrapositiva: p→q ≡ ~q→~p (inverte e nega ambas)</div></div><div class="mn"><div class="ms">DM</div><div class="me">De Morgan: ~(A∧B)=~A∨~B | ~(A∨B)=~A∧~B</div></div><div class="mn"><div class="ms">CND</div><div class="me">Condicional: p→q ≡ ~p∨q</div></div>
+<button class="cb" onclick="tgl(this)"><span class="ar">▶</span> Resumo completo + Pegadinhas</button>
+<div class="cbd"><div class="rt"><strong>EQUIVALÊNCIAS LÓGICAS - Proposições Equivalentes</strong><br><br>Duas proposições são <strong>logicamente equivalentes</strong> quando possuem a mesma tabela-verdade. Usamos &quot;≡&quot; para indicar equivalência.<br><br><strong>CONTRAPOSITIVA</strong>: A contrapositiva de p → q é ~q → ~p. São equivalentes.<br>- p → q ≡ ~q → ~p<br>- Exemplo: &quot;Se está chovendo, então o chão está molhado&quot; ≡ &quot;Se o chão não está molhado, então não está chovendo&quot;<br><br><strong>LEIS DE DE MORGAN</strong>: Negação de conjunções e disjunções.<br>- ~(p ∧ q) ≡ ~p ∨ ~q (negação da AND = OR das negações)<br>- ~(p ∨ q) ≡ ~p ∧ ~q (negação da OR = AND das negações)<br><br><strong>EQUIVALÊNCIAS CONDICIONAIS</strong>:<br>- p → q ≡ ~p ∨ q (condicional pode ser substituída por disjunção)<br>- p → q ≡ ~(p ∧ ~q) (negação da conjunção)<br><br><strong>DUPLA NEGAÇÃO</strong>:<br>- ~~p ≡ p (dupla negação volta ao original)<br><br><strong>LEI DA ABSORÇÃO</strong>:<br>- p ∧ (p ∨ q) ≡ p<br>- p ∨ (p ∧ q) ≡ p<br><br><strong>COMUTATIVIDADE</strong>:<br>- p ∧ q ≡ q ∧ p<br>- p ∨ q ≡ q ∨ p<br><br><strong>ASSOCIATIVIDADE</strong>:<br>- (p ∧ q) ∧ r ≡ p ∧ (q ∧ r)<br>- (p ∨ q) ∨ r ≡ p ∨ (q ∨ r)<br><br><strong>DISTRIBUTIVIDADE</strong>:<br>- p ∧ (q ∨ r) ≡ (p ∧ q) ∨ (p ∧ r)<br>- p ∨ (q ∧ r) ≡ (p ∨ q) ∧ (p ∨ r)<br><br>Sabemos que uma condicional só pode ser equivalente a outra condicional ou a uma disjunção inclusiva, <br>por meio das seguintes equivalências: <br>• p→q ≡ ~q→~p (contrapositiva) <br>• p→q ≡ ~p ∨ q (transformação da condicional em disjunção inclusiva) <br>Como a questão apresenta uma disjunção exclusiva (ou...ou) como possível equivalência, o gabarito do <br>item é ERRADO. <br>Para fins didáticos, vamos mostrar as possíveis equivalências da condicional. Considere as seguintes <br>proposições simples: <br>g: &quot;Gabriela cantou.&quot; <br>j: &quot;Jaqueline cantou.&quot; <br>Note que a condicional presente na questão pode ser descrita por g→~j: <br>g→~j: &quot;Se [Gabriela cantou], então [Jacqueline não cantou].&quot; <br>Utilizando a equivalência contrapositiva, ficamos com: <br>g→~j ≡ ~(~j)→~g <br>A dupla negação de j corresponde à proposição original. Ficamos com: <br>g→~j ≡ j→~g <br>Logo, temos a seguinte equivalência: <br>j→~g: &quot;Se [Jaqueline cantou], então [Gabriela não cantou].&quot; <br>Vamos agora utilizar a transformação da condicional em disjunção inclusiva. Para aplicar essa <br>equivalência, devemos realizar o seguinte procedimento: <br>• Nega-se o primeiro termo;  <br>• Troca-se a condicional (→) pela disjunção inclusiva (∨); e <br>• Mantém-se o segundo termo. <br><br> <br>Para o caso em questão, temos: <br>g→~j ≡ ~g∨~j <br>Logo, temos a seguinte equivalência: <br>~g∨~j: &quot;[Gabriela não cantou] ou [Jacqueline não cantou].&quot; <br>Observe, portanto, que as equivalências obtidas, j→~g e ~g∨~j, não correspondem à disjunção exclusiva <br>sugerida na questão, que pode ser descrita por g∨j: <br>g∨j:&quot; Ou [Gabriela cantou] ou [Jacqueline cantou].&quot;<br>---<br>Sejam as proposições simples: <br>m: &quot;Carlos mentiu sobre sua aprovação no concurso para a Polícia Militar de Pernambuco.&quot; <br>f: &quot;Carlos será criticado por sua família nas festas de final de ano.&quot; <br>A proposição original pode ser descrita por m→f: <br>m→f: &quot;Se [Carlos mentiu sobre sua aprovação no concurso para a Polícia Militar de Pernambuco], então <br>[(Carlos) será criticado por sua família nas festas de final de ano].&quot; <br>Existem duas possíveis equiv</div><div class="pl">Pegadinhas da banca</div><div class="pg">Inverter contrapositiva com recíproca (p → q ≠ q → p)</div><div class="pg">Confundir De Morgan: negar AND/OR sem trocar operador</div><div class="pg">Esquecer que condicional pode virar disjunção (~p ∨ q)</div><div class="pg">Aplicar distributividade errado entre AND e OR</div><div class="pg">Confundir equivalência com implicação (lógica).</div></div>
+</div><div class="tc">
+<div class="tc-hdr"><span class="rk">2</span><span class="tn">Álgebra de Proposições</span></div>
+<div class="tc-meta"><span class="mt">11q</span><span class="mt ceb">CEBRASPE 7</span><span class="mt ot">FGV 1</span></div>
+<div class="chips"><span class="ch">Operações Algébricas com Proposições</span><span class="ch">Simplificação de Expressões Lógicas</span><span class="ch">Forma Normal Disjuntiva</span><span class="ch">Forma Normal Conjuntiva</span><span class="ch">Resolução de Problemas Algébricos</span></div>
+<button class="cb" onclick="tgl(this)"><span class="ar">▶</span> Ver resumo e pegadinhas</button>
+<div class="cbd"><div class="rt"><strong>ÁLGEBRA DE PROPOSIÇÕES - Operações e Simplificação</strong><br><br>A álgebra de proposições utiliza operações lógicas para manipular e simplificar proposições complexas. Trabalha com operadores: ∧ (AND), ∨ (OR), ~ (NOT), → (implicação).<br><br><strong>IDENTIDADES ALGÉBRICAS BÁSICAS</strong>:<br>- p ∧ p ≡ p (idempotência)<br>- p ∨ p ≡ p (idempotência)<br>- p ∧ V ≡ p (verdade é elemento neutro da AND)<br>- p ∧ F ≡ F (falso anula AND)<br>- p ∨ V ≡ V (verdade absorve OR)<br>- p ∨ F ≡ p (falso é elemento neutro da OR)<br>- p ∧ ~p ≡ F (contradição)<br>- p ∨ ~p ≡ V (tautologia)<br><br><strong>COMUTATIVIDADE E ASSOCIATIVIDADE</strong>:<br>Permitem reorganizar operações sem alterar resultado.<br><br><strong>DISTRIBUTIVIDADE</strong>:<br>- p ∧ (q ∨ r) ≡ (p ∧ q) ∨ (p ∧ r)<br>- p ∨ (q ∧ r) ≡ (p ∨ q) ∧ (p ∨ r)<br><br><strong>LEIS DE ABSORÇÃO</strong>:<br>- p ∧ (p ∨ q) ≡ p<br>- p ∨ (p ∧ q) ≡ p<br><br><strong>FORMAS NORMAIS</strong>:<br>- <strong>Disjuntiva</strong>: OR de ANDs<br>- <strong>Conjuntiva</strong>: AND de ORs<br><br>Em uma bicondicional XY, sabemos que, se X e Y forem proposições equivalentes, a bicondicional será <br>uma tautologia. <br>Para identificar se a bicondicional ~(Q→P)∨[(~B)∨(~C)]~[(B∧C)∧(Q→P)] é uma tautologia, vamos <br>verificar se a segunda parcela da bicondicional, dada por ~[(B∧C)∧(Q→P)], é equivalente a primeira parcela <br>da bicondicional,  dada por ~(Q→P)∨[(~B)∨(~C)]. <br>Note que a segunda parcela é a negação de uma conjunção entre (B∧C) e (Q→P). Para negar uma conjunção, <br>podemos utilizar De Morgan: negam-se ambas as parcelas e troca-se o &quot;e&quot; pelo &quot;ou&quot;. Ficamos com: <br>~[(B∧C)∧(Q→P)] ≡ ~(B∧C)∨~(Q→P) <br>Note que a negação ~(B∧C) também pode ser desenvolvida por De Morgan, obtendo-se [(~B)∨(~C)]. <br>Portanto, temos a seguinte equivalência: <br>~[(B∧C)∧(Q→P)] ≡ [(~B)∨(~C)]∨~(Q→P) <br>Note que, pela propriedade comutativa, podemos trocar as parcelas [(~B)∨(~C)] e ~(Q→P) de posição na <br>disjunção inclusiva que as liga. Portanto, ficamos com: <br>~[(B∧C)∧(Q→P)] ≡ ~(Q→P)∨[(~B)∨(~C)] <br>Logo, observe que a segunda parcela da bicondicional, ~[(B∧C)∧(Q→P)], é equivalente à primeira parcela da <br>bicondicional, ~(Q→P)∨[(~B)∨(~C)]. Portanto, a bicondicional em questão é uma tautologia.<br>---<br>Sejam as proposições simples: <br>f: &quot;O cavalo é forte.&quot; <br>v: &quot;O cavalo é veloz.&quot; <br>Note que a proposição composta apresentada pode ser descrita pela conjunção f∧v: <br>f∧v: “[O cavalo é forte] e [(o cavalo é) veloz]” <br>Aplicando a propriedade comutativa para a conjunção, podemos trocar as parcelas de posição: <br>f∧v ≡ v∧f <br>Logo, a af</div><div class="pl">Pegadinhas da banca</div><div class="pg">Esquecer elemento neutro e absorção em simplificação</div><div class="pg">Confundir idempotência com outras operações</div><div class="pg">Errar ao distribuir operadores em expressões complexas</div><div class="pg">Não reconhecer forma normal apropriada</div><div class="pg">Aplicar regras algébricas em ordem errada</div></div>
+</div>
+</div>
+<footer>Raciocínio Lógico · Aula 01 · Gerado a partir de 110 questões</footer>
+</div>
+</div><!-- /main-content -->
+
+<script>
+// ===== Resumo interactions =====
+function tgl(b){b.classList.toggle('open');b.nextElementSibling.classList.toggle('show')}
+
+// ===== Supabase Auth =====
+let sb=null, currentUser=null;
+
+function initSB(){
+  if(typeof SUPABASE_URL==='undefined'||SUPABASE_URL.includes('SEU-PROJETO'))return false;
+  sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);return true;
+}
+
+async function checkAuth(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(session){currentUser=session.user;showContent();}
+  else{document.getElementById('auth-gate').style.display='flex';}
+}
+
+function showContent(){
+  document.getElementById('auth-gate').style.display='none';
+  document.getElementById('main-content').style.display='block';
+}
+
+async function handleLogout(){if(sb)await sb.auth.signOut();location.href='/index.html';}
+
+document.getElementById('login-form').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const em=document.getElementById('login-email').value;
+  const pw=document.getElementById('login-pass').value;
+  const er=document.getElementById('login-error');er.textContent='';
+  const{data,error}=await sb.auth.signInWithPassword({email:em,password:pw});
+  if(error){er.textContent='Email ou senha incorretos.';return;}
+  currentUser=data.user;showContent();
+});
+
+// ===== Init =====
+document.addEventListener('DOMContentLoaded',()=>{
+  if(initSB()){checkAuth();}
+  else{showContent();}
+});
+</script>
+</body>
+</html>

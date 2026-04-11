@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resumo — Aula 01 · Contabilidade Geral e Avançada</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/assets/config.js"></script>
+<style>
+:root{--bg:#0c0e13;--bg2:#13161e;--bg3:#1a1e2a;--accent:#f59e0b;--accent-soft:rgba(245,158,11,.1);--green:#34d399;--green-soft:rgba(52,211,153,.08);--blue:#60a5fa;--blue-soft:rgba(96,165,250,.08);--red:#f87171;--red-soft:rgba(248,113,113,.07);--purple:#a78bfa;--purple-soft:rgba(167,139,250,.08);--text:#e4e6ec;--dim:#8a8fa4;--faint:#4e5268;--border:#252937;--r:14px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.8;padding:2.5rem 1.2rem}
+.wrap{max-width:720px;margin:0 auto}
+header{text-align:center;margin-bottom:2.5rem}
+.badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:3px;color:var(--accent);background:var(--accent-soft);padding:5px 16px;border-radius:20px;margin-bottom:1rem}
+header h1{font-family:'DM Serif Display',serif;font-size:2rem;font-weight:400;line-height:1.3;margin-bottom:.4rem}
+header .sub{color:var(--dim);font-size:.9rem}
+.stats{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:2rem}
+.st{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 16px;font-size:.8rem;text-align:center}
+.st strong{color:var(--accent);font-size:1.2rem;display:block}
+.sec{margin-bottom:2.5rem}
+.sec-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:3px;color:var(--faint);margin-bottom:.6rem}
+.sec h2{font-family:'DM Serif Display',serif;font-size:1.3rem;font-weight:400;margin-bottom:1rem}
+hr.div{border:none;height:1px;background:var(--border);margin:2rem 0}
+
+/* TOPIC CARD */
+.tc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;margin-bottom:1.5rem;transition:border-color .2s}
+.tc.pareto{border-color:rgba(245,158,11,.25)}
+.tc-hdr{display:flex;align-items:center;margin-bottom:.8rem;flex-wrap:wrap;gap:8px}
+.rk{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#000;font-weight:700;font-size:.8rem;flex-shrink:0}
+.tn{font-weight:700;font-size:1.05rem;flex:1}
+.pareto-badge{display:inline-flex;align-items:center;gap:4px;font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent);background:var(--accent-soft);padding:4px 12px;border-radius:20px;flex-shrink:0}
+.tc-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+.mt{font-size:.68rem;padding:3px 10px;border-radius:20px;background:var(--bg3);color:var(--dim);font-family:'JetBrains Mono',monospace}
+.mt.ceb{border:1px solid rgba(96,165,250,.3);color:var(--blue)}
+.mt.ot{border:1px solid rgba(245,158,11,.3);color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
+.ch{font-size:.73rem;padding:4px 12px;border-radius:20px;background:var(--bg3);color:var(--dim);border:1px solid var(--border)}
+
+/* ANALOGIA */
+.an{background:var(--bg2);border-radius:var(--r);padding:1.3rem;margin-bottom:1rem;border:1px solid var(--border)}
+.an .icon{font-size:1.6rem;margin-bottom:.4rem}
+.an p{font-size:.9rem;color:var(--dim);line-height:1.75}
+.an p strong{color:var(--text);font-weight:600}
+
+/* MNEMONIC */
+.mn{background:var(--bg3);border:1px dashed var(--accent);border-radius:var(--r);padding:1rem 1.3rem;margin-bottom:1rem;text-align:center}
+.mn .ms{font-family:'JetBrains Mono',monospace;font-size:.95rem;color:var(--accent);font-weight:600;letter-spacing:1px}
+.mn .me{font-size:.8rem;color:var(--dim);margin-top:.3rem}
+
+/* PAIR */
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1rem}
+.bx{padding:1.1rem;border-radius:var(--r);border:1px solid var(--border)}
+.bx.g{background:var(--green-soft);border-color:rgba(52,211,153,.15)}
+.bx.b{background:var(--blue-soft);border-color:rgba(96,165,250,.15)}
+.bx .bl{font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:2px;margin-bottom:.4rem}
+.bx.g .bl{color:var(--green)}
+.bx.b .bl{color:var(--blue)}
+.bx .bt{font-weight:700;font-size:.95rem;margin-bottom:.3rem}
+.bx p{font-size:.85rem;color:var(--dim);line-height:1.7}
+.bx p strong{color:var(--text);font-weight:600}
+
+/* RESUMO & PEGADINHAS */
+.rt{font-size:.9rem;line-height:1.8;color:var(--dim);margin-bottom:1rem}
+.rt strong{color:var(--text);font-weight:600}
+.pg{background:var(--red-soft);border-left:3px solid var(--red);padding:.8rem 1rem;margin-bottom:.6rem;border-radius:0 8px 8px 0;font-size:.85rem;color:var(--dim);line-height:1.7}
+.pg::before{content:"⚠ ";color:var(--red);font-weight:700}
+.pl{font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--red);margin-bottom:.5rem;margin-top:1rem}
+
+/* COLLAPSE */
+.cb{width:100%;text-align:left;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.88rem;display:flex;align-items:center;gap:8px;transition:border-color .2s;margin-top:.5rem}
+.cb:hover{border-color:var(--accent)}
+.cb .ar{transition:transform .2s;color:var(--accent);font-size:.75rem}
+.cb.open .ar{transform:rotate(90deg)}
+.cbd{display:none;padding:1rem 0 0;animation:fi .25s ease}
+.cbd.show{display:block}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+
+/* PARETO INFO */
+.pareto-info{background:var(--accent-soft);border:1px solid rgba(245,158,11,.15);border-radius:var(--r);padding:1.2rem 1.5rem;margin-bottom:2rem;font-size:.88rem;color:var(--dim);line-height:1.7}
+.pareto-info strong{color:var(--accent)}
+
+footer{text-align:center;margin-top:2rem;color:var(--faint);font-size:.72rem;font-family:'JetBrains Mono',monospace}
+
+/* Auth gate */
+#auth-gate{display:none;position:fixed;inset:0;z-index:9999;background:var(--bg);justify-content:center;align-items:center;flex-direction:column}
+.login-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:40px 36px;max-width:380px;width:90%;text-align:center}
+.login-box h1{font-size:1.4rem;margin-bottom:6px}
+.login-box .subtitle{color:var(--dim);font-size:.85rem;margin-bottom:28px}
+.login-box input{display:block;width:100%;padding:10px 14px;margin-bottom:12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.95rem;font-family:inherit}
+.login-box input:focus{outline:none;border-color:var(--accent)}
+.login-box button[type=submit]{width:100%;padding:10px;background:#238636;color:#fff;border:none;border-radius:6px;font-size:.95rem;font-weight:600;cursor:pointer;margin-top:4px}
+.login-box button[type=submit]:hover{background:#2ea043}
+#login-error{color:#f87171;font-size:.85rem;margin-top:10px;min-height:1.2em}
+
+.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+#logout-btn{background:var(--bg2);border:1px solid var(--border);color:var(--dim);padding:6px 14px;border-radius:6px;font-size:.75rem;cursor:pointer;font-family:inherit}
+#logout-btn:hover{border-color:var(--red);color:var(--red)}
+
+@media(max-width:580px){
+  header h1{font-size:1.5rem}
+  body{padding:1.5rem .8rem}
+  .pair{grid-template-columns:1fr}
+  .tc-hdr{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<!-- Auth Gate -->
+<div id="auth-gate">
+<div class="login-box">
+<h1>Resumo de Memorização</h1>
+<p class="subtitle">Faça login para acessar o material</p>
+<form id="login-form">
+<input type="email" id="login-email" placeholder="Email" required autocomplete="email">
+<input type="password" id="login-pass" placeholder="Senha" required autocomplete="current-password">
+<button type="submit">Entrar</button>
+</form>
+<p id="login-error"></p>
+</div>
+</div>
+
+<!-- Main Content -->
+<div id="main-content" style="display:none">
+<div class="top-bar">
+<a href="/index.html" class="back-link">&#8592; Painel de Estudos</a>
+<button id="logout-btn" onclick="handleLogout()">Sair</button>
+</div>
+<div class="wrap">
+<header>
+<div class="badge">Resumo de Memorização</div>
+<h1>Aula 01 — Contabilidade Geral e Avançada</h1>
+<p class="sub">44 questões analisadas · 1 tópicos</p>
+</header>
+<div class="stats">
+<div class="st"><strong>44</strong>Questões</div>
+<div class="st"><strong>27</strong>CEBRASPE</div>
+<div class="st"><strong>17</strong>FGV</div>
+<div class="st"><strong>1</strong>Tópicos</div>
+</div>
+<div class="pareto-info">
+<strong>Princípio de Pareto:</strong> 1 de 1 tópicos concentram <strong>100%</strong> das questões (44 de 44).
+Esses tópicos receberam tratamento personalizado com analogias, mnemônicos e comparações visuais — marcados com ⭐.
+</div>
+<div class="sec">
+<div class="sec-tag">Tópicos rankeados por cobrança</div>
+<h2>Do mais cobrado ao menos cobrado</h2>
+<div class="tc pareto">
+<div class="tc-hdr"><span class="rk">1</span><span class="tn">Patrimônio</span><span class="pareto-badge">⭐ Personalizado</span></div>
+<div class="tc-meta"><span class="mt">44q</span><span class="mt ceb">CEBRASPE 27</span><span class="mt ot">FGV 17</span></div>
+<div class="chips"><span class="ch">Conceito de Ativo segundo Estrutura Conceitual</span><span class="ch">Conceito de Passivo e Obrigações Presentes</span><span class="ch">Patrimônio Líquido e Valor Residual</span><span class="ch">Equação Patrimonial Fundamental</span><span class="ch">Situação Líquida Positiva (Superavitária)</span><span class="ch">Situação Líquida Negativa (Passivo a Descoberto)</span><span class="ch">Situação Líquida Nula ou Compensada</span></div>
+<div class="an"><div class="icon">🏠</div><p>Patrimônio de uma pessoa é como uma <strong>casa</strong>: o <strong>ativo</strong> são as <strong>posses valiosas</strong> (móveis, dinheiro, carro); o <strong>passivo</strong> são as <strong>dívidas</strong> (hipoteca, empréstimos); e o <strong>patrimônio líquido</strong> é o que <strong>realmente lhe pertence</strong> (valor da casa menos a dívida).</p></div><div class="pair">
+<div class="bx g"><div class="bl">ATIVO</div><div class="bt">Recursos Econômicos</div><p>Bens, direitos e recursos que geram benefícios futuros; controlado pela entidade</p></div>
+<div class="bx b"><div class="bl">PASSIVO</div><div class="bt">Obrigações Exigíveis</div><p>Dívidas e compromissos com terceiros; dever de transferir recursos</p></div>
+</div><div class="mn"><div class="ms">A = P + PL</div><div class="me">Equação Patrimonial: Ativo = Passivo + Patrimônio Líquido</div></div><div class="mn"><div class="ms">CPO</div><div class="me">Controle, Potencial, Origem - três características de ativo</div></div><div class="mn"><div class="ms">SL+/-/0</div><div class="me">Situação Líquida: Positiva (A&gt;P), Nula (A=P), Negativa (A&lt;P)</div></div>
+<button class="cb" onclick="tgl(this)"><span class="ar">▶</span> Resumo completo + Pegadinhas</button>
+<div class="cbd"><div class="rt"><strong>PATRIMÔNIO - Estrutura Conceitual da Contabilidade</strong><br><br>Segundo o CPC 00 (R2), o patrimônio é estruturado a partir de três elementos fundamentais: <strong>ativo</strong>, <strong>passivo</strong> e <strong>patrimônio líquido</strong>.<br><br><strong>ATIVO</strong>: Recurso econômico presente controlado pela entidade como resultado de eventos passados. Deve ter: (1) potencial de produzir benefício econômico, (2) controle pela entidade, (3) origem em evento passado. Não é necessário propriedade, apenas controle.<br><br><strong>PASSIVO</strong>: Obrigação presente da entidade de transferir um recurso econômico como resultado de eventos passados. Características essenciais: (1) obrigação atual, (2) resultado de evento passado, (3) dever de transferir recurso econômico.<br><br><strong>PATRIMÔNIO LÍQUIDO</strong>: Valor residual dos ativos da entidade depois de deduzidos todos os seus passivos. Fórmula: <strong>PL = Ativo - Passivo</strong><br><br><strong>EQUAÇÃO PATRIMONIAL</strong>: A = P + PL<br>Relações diretas e inversas:<br>- Ativo ↑ → Passivo ou PL ↑<br>- Passivo ↑ → PL ↓<br>- PL ↑ → Passivo ↓<br><br><strong>SITUAÇÕES LÍQUIDAS</strong>:<br>1. <strong>Positiva/Superavitária</strong> (A &gt; P): Ativo excede Passivo, PL positivo<br>2. <strong>Negativa/Passivo a Descoberto</strong> (A &lt; P): Ativo insuficiente, PL negativo<br>3. <strong>Nula/Compensada</strong> (A = P): Ativo iguala Passivo, PL = zero<br><br>O <strong>controle</strong> é mais relevante que a <strong>propriedade</strong> para caracterizar um ativo. Na constituição de entidade, A = PL e P = 0, evoluindo com operações. A soma modular do ativo com PL negativo iguala o passivo em situação de descoberto.<br><br>Quando o valor do passivo é maior que o do ativo, ocorre a situação de passivo a descoberto. Isto é, ativo é <br>insuficiente para cobrir todos os compromissos com terceiros assumidos pela entidade. <br>A &lt; P → A – P &lt; 0 → SL &lt; 0 <br>Recordamos que ela também é conhecida como Situação Líquida Negativa; Situação Líquida Passiva; Situação <br>Líquida Deficitária; Passivo a Descoberto.<br>---<br>Extraindo-se os dados do comando da questão temos: <br>• Ativo = caixa e equivalente (R$ 10.000) + contas a receber (R$ 25.000) = R$ 35.000 <br>• Passivo = contas a pagar = R$ 15.000 <br>• Patrimônio líquido = R$ 20.000 <br>Nota-se a seguinte situação: <br>A &gt; P → A – P &gt; 0 → SL &gt; 0 <br>Nesse caso temos uma Situação Líquida Positiva/Ativa/Superavitária (total de bens e direitos é maior que <br>o total das obrigações).<br>---<br>Nota-se a seguinte situação: <br>A &lt; P → A – P &lt; 0 → SL &lt; 0 <br>Quando o valor do passivo é maior que o do ativo, ocorre a situação de passivo a descoberto.  <br>Recordamos que ela também é conhecida como Situação Líquida Negativa; Situação Líquida Passiva; Situação <br>Líquida Deficitária; Passivo a Descoberto.<br>---<br>O quesito informou que tal situação seria impossível. Todavia, no momento da constituição das entidades <br>contábeis ocorre a seguinte situação: <br>A = PL e P = 0 <br>Para facilitar a visualização, imagine a situação em que uma empresa tenha apenas 100,00 de capital social. <br>Como a origem de recursos deve ser igual à aplicação de recursos, nesse caso o ativo dessa empresa será de <br>100,00 também, pois não há capitai</div><div class="pl">Pegadinhas da banca</div><div class="pg">Confundir propriedade com controle na definição de ativo</div><div class="pg">Esquecer que PL pode ser negativo (passivo a descoberto)</div><div class="pg">Achar que ativo deve estar em uso ou ser lucro fixo</div><div class="pg">Confundir situações líquidas: positiva vs. nula vs. negativa</div><div class="pg">Não reconhecer que controle é suficiente mesmo sem propriedade</div></div>
+</div>
+</div>
+<footer>Contabilidade Geral e Avançada · Aula 01 · Gerado a partir de 44 questões</footer>
+</div>
+</div><!-- /main-content -->
+
+<script>
+// ===== Resumo interactions =====
+function tgl(b){b.classList.toggle('open');b.nextElementSibling.classList.toggle('show')}
+
+// ===== Supabase Auth =====
+let sb=null, currentUser=null;
+
+function initSB(){
+  if(typeof SUPABASE_URL==='undefined'||SUPABASE_URL.includes('SEU-PROJETO'))return false;
+  sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);return true;
+}
+
+async function checkAuth(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(session){currentUser=session.user;showContent();}
+  else{document.getElementById('auth-gate').style.display='flex';}
+}
+
+function showContent(){
+  document.getElementById('auth-gate').style.display='none';
+  document.getElementById('main-content').style.display='block';
+}
+
+async function handleLogout(){if(sb)await sb.auth.signOut();location.href='/index.html';}
+
+document.getElementById('login-form').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const em=document.getElementById('login-email').value;
+  const pw=document.getElementById('login-pass').value;
+  const er=document.getElementById('login-error');er.textContent='';
+  const{data,error}=await sb.auth.signInWithPassword({email:em,password:pw});
+  if(error){er.textContent='Email ou senha incorretos.';return;}
+  currentUser=data.user;showContent();
+});
+
+// ===== Init =====
+document.addEventListener('DOMContentLoaded',()=>{
+  if(initSB()){checkAuth();}
+  else{showContent();}
+});
+</script>
+</body>
+</html>
